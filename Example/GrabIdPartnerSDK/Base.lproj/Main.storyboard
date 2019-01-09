@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="ufC-wZ-h7g">
+            <objects>
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="GrabIdPartnerSDK_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
+                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZmI-Gi-tsy">
+                                <rect key="frame" x="32" y="52" width="311" height="30"/>
+                                <color key="backgroundColor" red="0.17254901959999999" green="0.7725490196" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Grab SignIn">
+                                    <color key="titleColor" red="0.10980392160000001" green="0.10980392160000001" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="6"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didGrabSignIn:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="aUP-3o-rK3"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WTy-Hn-vaU">
+                                <rect key="frame" x="32" y="128" width="311" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Test Protected Resource">
+                                    <color key="titleColor" red="0.10980392160000001" green="0.10980392160000001" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="6"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didAccessTestRes:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="mTL-9p-B81"/>
+                                </connections>
+                            </button>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ao0-1L-3VD">
+                                <rect key="frame" x="32" y="204" width="311" height="447"/>
+                                <subviews>
+                                    <label autoresizesSubviews="NO" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="headTruncation" numberOfLines="1500" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F1O-7f-AYD">
+                                        <rect key="frame" x="5" y="5" width="301" height="0.0"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="F1O-7f-AYD" firstAttribute="top" secondItem="Ao0-1L-3VD" secondAttribute="top" constant="5" id="5sg-8d-oxC"/>
+                                    <constraint firstAttribute="bottom" secondItem="F1O-7f-AYD" secondAttribute="bottom" constant="5" id="BFz-5H-1wP"/>
+                                    <constraint firstItem="F1O-7f-AYD" firstAttribute="leading" secondItem="Ao0-1L-3VD" secondAttribute="leading" constant="5" id="JTq-lx-KaT"/>
+                                    <constraint firstItem="F1O-7f-AYD" firstAttribute="width" secondItem="Ao0-1L-3VD" secondAttribute="width" constant="-10" id="SPr-Eb-8aS"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
+                                </userDefinedRuntimeAttributes>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UWq-Vh-zKY">
+                                <rect key="frame" x="32" y="90" width="311" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Get Id Token Info">
+                                    <color key="titleColor" red="0.10980392160000001" green="0.10980392160000001" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="6"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didGetIdTokenInfo:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="frG-GQ-xRs"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bvn-WJ-aQv">
+                                <rect key="frame" x="32" y="166" width="311" height="30"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Clear Grab SignIn Session">
+                                    <color key="titleColor" red="0.10980392160000001" green="0.10980392160000001" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="6"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didGrabSignOut:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="o20-2J-Paw"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="ZmI-Gi-tsy" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="16" id="3MK-Kj-x5k"/>
+                            <constraint firstItem="WTy-Hn-vaU" firstAttribute="top" secondItem="UWq-Vh-zKY" secondAttribute="bottom" constant="8" id="A5L-55-sC0"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="WTy-Hn-vaU" secondAttribute="trailing" constant="16" id="Ffs-Dq-fFl"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ZmI-Gi-tsy" secondAttribute="trailing" constant="16" id="Kp2-fi-5SU"/>
+                            <constraint firstItem="ZmI-Gi-tsy" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="32" id="L9V-og-BMX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ao0-1L-3VD" secondAttribute="trailing" constant="16" id="Oro-s3-HlA"/>
+                            <constraint firstItem="UWq-Vh-zKY" firstAttribute="top" secondItem="ZmI-Gi-tsy" secondAttribute="bottom" constant="8" id="WlY-p2-A9O"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="bvn-WJ-aQv" secondAttribute="trailing" constant="16" id="XHI-IE-XNs"/>
+                            <constraint firstItem="WTy-Hn-vaU" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="16" id="Xdk-co-pbK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="UWq-Vh-zKY" secondAttribute="trailing" constant="16" id="Yl4-7c-0jj"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Ao0-1L-3VD" secondAttribute="bottom" constant="16" id="bql-fC-tIz"/>
+                            <constraint firstItem="bvn-WJ-aQv" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="16" id="dBe-qP-j2q"/>
+                            <constraint firstItem="Ao0-1L-3VD" firstAttribute="top" secondItem="bvn-WJ-aQv" secondAttribute="bottom" constant="8" id="hRo-yh-bCB"/>
+                            <constraint firstItem="Ao0-1L-3VD" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="16" id="nUJ-kv-67n"/>
+                            <constraint firstItem="UWq-Vh-zKY" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="16" id="oHE-mt-g7A"/>
+                            <constraint firstItem="bvn-WJ-aQv" firstAttribute="top" secondItem="WTy-Hn-vaU" secondAttribute="bottom" constant="8" id="upM-iH-dZQ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="getIdTokenInfo" destination="UWq-Vh-zKY" id="YRN-Kk-23d"/>
+                        <outlet property="grabSignInButton" destination="ZmI-Gi-tsy" id="lyj-bz-SRS"/>
+                        <outlet property="grabSignOutButton" destination="bvn-WJ-aQv" id="8Nc-B2-b0V"/>
+                        <outlet property="messageLabel" destination="F1O-7f-AYD" id="VoI-yp-qqm"/>
+                        <outlet property="messageScrollView" destination="Ao0-1L-3VD" id="3Zi-R7-4JT"/>
+                        <outlet property="testProtectedResourceButton" destination="WTy-Hn-vaU" id="VA2-4i-vrJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="37.600000000000001" y="25.637181409295355"/>
+        </scene>
+    </scenes>
+</document>
