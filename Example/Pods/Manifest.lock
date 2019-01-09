@@ -1,0 +1,16 @@
+PODS:
+  - GrabIdPartnerSDK (1.0.1)
+
+DEPENDENCIES:
+  - GrabIdPartnerSDK (from `../`)
+
+EXTERNAL SOURCES:
+  GrabIdPartnerSDK:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  GrabIdPartnerSDK: cc0dcc0ea8af8ff3091a5ba6aaad0103b183fd2a
+
+PODFILE CHECKSUM: 0c1a1fb4f9c6d746aed15dc77ea20dfcb3406777
+
+COCOAPODS: 1.5.3

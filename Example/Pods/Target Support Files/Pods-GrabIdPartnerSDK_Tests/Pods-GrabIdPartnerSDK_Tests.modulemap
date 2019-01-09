@@ -1,0 +1,6 @@
+framework module Pods_GrabIdPartnerSDK_Tests {
+  umbrella header "Pods-GrabIdPartnerSDK_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

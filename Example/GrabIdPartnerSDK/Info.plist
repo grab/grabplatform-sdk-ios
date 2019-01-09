@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.grab.grabweblogin</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>grabweblogin</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+	</array>
+	<key>GrabIdPartnerSDK</key>
+	<dict>
+		<key>ClientId</key>
+		<string>&lt;please obtain client id from the Grab id team to run the example&gt;</string>
+		<key>Hint</key>
+		<string></string>
+		<key>RedirectUrl</key>
+		<string>grabweblogin://open</string>
+		<key>Scope</key>
+		<string>gid_test_scope_1 gid_test_scope_2 gid_test_scope_3 openid</string>
+		<key>ServiceDiscoveryUrl</key>
+		<string>&lt;please obtain the service discovery endpoint from the Grab Id team&gt;</string>
+		<key>TestProtectedResourceUrl</key>
+		<string>&lt;please obtain the test resource end point from the Grab Id team&gt;</string>
+	</dict>
+</dict>
+</plist>

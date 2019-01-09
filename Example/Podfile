@@ -1,0 +1,17 @@
+platform :ios, '9.0'
+use_frameworks!
+
+target 'GrabIdPartnerSDK_Example' do
+  pod 'GrabIdPartnerSDK', :path => '../'
+
+  target 'GrabIdPartnerSDK_Tests' do
+    inherit! :search_paths
+
+    #   pod 'Quick', '~> 1.2.0'
+    #   pod 'Nimble', '~> 7.0.2'
+    #   pod 'FBSnapshotTestCase' , '~> 2.1.4'
+    #   pod 'Nimble-Snapshots' , '~> 6.3.0'
+    #   pod 'Alamofire', '~> 4.7.0'
+    #   pod 'PromiseKit', '~> 6.0'
+  end
+end
