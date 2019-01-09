@@ -1,16 +1,21 @@
 PODS:
-  - GrabIdPartnerSDK (1.0.1)
+  - GrabIdPartnerSDK (1.0.0)
 
 DEPENDENCIES:
-  - GrabIdPartnerSDK (from `../`)
+  - GrabIdPartnerSDK (from `https://github.com/grab/grabplatform-sdk-ios.git`)
 
 EXTERNAL SOURCES:
   GrabIdPartnerSDK:
-    :path: "../"
+    :git: https://github.com/grab/grabplatform-sdk-ios.git
+
+CHECKOUT OPTIONS:
+  GrabIdPartnerSDK:
+    :commit: d1c06594e06b060d392beb9e3b4ccf8757c7d87d
+    :git: https://github.com/grab/grabplatform-sdk-ios.git
 
 SPEC CHECKSUMS:
-  GrabIdPartnerSDK: cc0dcc0ea8af8ff3091a5ba6aaad0103b183fd2a
+  GrabIdPartnerSDK: 72114e8a7f7b11f78d794feae1d3652fe69a8194
 
-PODFILE CHECKSUM: 0c1a1fb4f9c6d746aed15dc77ea20dfcb3406777
+PODFILE CHECKSUM: 9de0aa941d82f90594fef64048682422d573a5b9
 
 COCOAPODS: 1.5.3

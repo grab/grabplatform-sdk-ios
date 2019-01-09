@@ -9,11 +9,6 @@ and terms of service.
 [![License](https://img.shields.io/cocoapods/l/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 [![Platform](https://img.shields.io/cocoapods/p/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 
-## Installation
-CocoaPods is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate GrabID Partner SDK into your Xcode project using CocoaPods, specify it in your Podfile:
-
-  pod 'GrabIdPartnerSDK', :git => 'https://github.com/grab/grabplatform-sdk-ios.git'
-
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
