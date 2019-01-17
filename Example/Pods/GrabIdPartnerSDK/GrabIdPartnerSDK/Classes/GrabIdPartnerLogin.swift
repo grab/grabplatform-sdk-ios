@@ -715,7 +715,7 @@ internal enum GrantType : String {
     ]
     
     if !loginSession.hint.isEmpty {
-      queryParams.append(NSURLQueryItem(name: "login_hint", value: loginSession.hint))
+      queryParams.append(NSURLQueryItem(name: "id_token_hint", value: loginSession.hint))
     }
 
     // handle optional parameters
