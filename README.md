@@ -91,8 +91,9 @@ Partner application should register their RedirectUrl and obtain the Client Id, 
 <key>ServiceDiscoveryUrl</key>
 <string>[obtain the service discovery endpoint from the GrabId team]</string>
 <-- Optional
+
 <key>Hint</key>
-<string>[Hint]</string>
+<string>[Hint - set the query parameter id_token_hint for the Authorize end point]</string>
 
 <key>Request</key>
 <string>[Pass thru string if specified will add query parameter &request=[request string] to the /authorize service call]</string>
@@ -296,7 +297,8 @@ scope: String                               Specify the requested permission sco
 request: String                             Partner specific request string.
 
 hint: String                                Serialized JWT token that client already has, if provided, the user will 
-                                            not be prompted to authenticate
+                                            not be prompted to authenticate. hint will be sent in query parameter id_token_hint in
+                                            the authroize call to Grab ID.
 
 acrValues: [String:String]                  Partner specific acr values (name value pairs).
 
