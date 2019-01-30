@@ -21,6 +21,7 @@ internal enum GrantType : String {
   func exchangeToken(loginSession: LoginSession, url: URL, completion: @escaping (GrabIdPartnerError?) -> Void)
   func getIdTokenInfo(loginSession: LoginSession, completion: @escaping (IdTokenInfo?, GrabIdPartnerError?) -> Void)
   func loginCompleted(loginSession: LoginSession) -> Bool
+  func loginCompleted(loginSession: LoginSession, completion:(()->Void)?) -> Bool
   func logout(loginSession: LoginSession, completion: ((GrabIdPartnerError?) -> Void)?)
   func isValidAccessToken(loginSession: LoginSession) -> Bool
   func isValidIdToken(idTokenInfo: IdTokenInfo) -> Bool
@@ -31,7 +32,7 @@ internal enum GrantType : String {
   @objc public let redirectUrl : URL
   @objc public let scope : String
   @objc public let hint : String
-
+  
   // Used by app for one time transactions scenario - base64 encoded jwt
   @objc public let request : String?
   
@@ -46,7 +47,7 @@ internal enum GrantType : String {
   @objc public fileprivate(set) var state : String? = nil
   @objc public fileprivate(set) var tokenType : String? = nil
   @objc public fileprivate(set) var nonce : String? = nil
-
+  
   // don't store the tokens in user defaults, they are stored in the keychain
   @objc public fileprivate(set) var accessToken: String?
   @objc public fileprivate(set) var idToken : String? = nil
@@ -55,9 +56,9 @@ internal enum GrantType : String {
   
   // internal to GrabId Partner SDK
   fileprivate var safariView : SFSafariViewController? = nil
-
+  
   fileprivate var codeChallenge : String? = nil
-
+  
   // end points
   fileprivate var authorizationEndpoint : String?
   fileprivate var tokenEndpoint : String?
@@ -115,7 +116,7 @@ internal enum GrantType : String {
 
 @objc open class GrabIdPartner : NSObject, GrabIdPartnerProtocol {
   static private var grabIdPartner : GrabIdPartner? = nil
-
+  
   private let codeChallengeMethod = "S256"
   private let deviceId = UIDevice.current.identifierForVendor!.uuidString
   private let authorization_grantType = "authorization_code"
@@ -124,7 +125,7 @@ internal enum GrantType : String {
   private let endPoints : GrabApi.serviceEndPoints? = nil
   private let urlSession: URLSession?
   private let bundle: Bundle?
-
+  
   @objc static public func sharedInstance() -> GrabIdPartnerProtocol? {
     if grabIdPartner != nil {
       return grabIdPartner
@@ -133,12 +134,12 @@ internal enum GrantType : String {
       return grabIdPartner
     }
   }
-
+  
   @objc public init(bundle: Bundle = Bundle.main) {
     self.urlSession = .shared
     self.bundle = bundle
   }
-
+  
   @objc public init(urlSession: URLSession = .shared, bundle: Bundle = Bundle.main) {
     self.urlSession = urlSession
     self.bundle = bundle
@@ -154,15 +155,15 @@ internal enum GrantType : String {
     var error : GrabIdPartnerError? = nil
     var acrValues : [String:String]? = nil
     var hint : String? = nil
-
+    
     guard let bundle = bundle else {
       assertionFailure("failed to load bundle")
       return
     }
     
     if let infoPlist = bundle.infoDictionary,
-       let config = infoPlist["GrabIdPartnerSDK"] as? Dictionary<String, AnyObject> {
-
+      let config = infoPlist["GrabIdPartnerSDK"] as? Dictionary<String, AnyObject> {
+      
       clientId = config["ClientId"] as? String
       redirectUrl = config["RedirectUrl"] as? String
       scope = config["Scope"] as? String
@@ -174,13 +175,13 @@ internal enum GrantType : String {
       error = GrabIdPartnerError(code: .invalidConfiguration, localizeMessage:GrabIdPartnerLocalization.invalidConfiguration.rawValue,
                                  domain: .loadConfiguration, serviceError: nil)
     }
-
+    
     if let appClientId = clientId,
-       let appScope = scope,
-       let appRedirectUrl = redirectUrl,
-       let appUrl = URL(string: appRedirectUrl),
-       let serviceDiscoveryUrl = serviceDiscoveryUrl,
-       let hint = hint {
+      let appScope = scope,
+      let appRedirectUrl = redirectUrl,
+      let appUrl = URL(string: appRedirectUrl),
+      let serviceDiscoveryUrl = serviceDiscoveryUrl,
+      let hint = hint {
       loginSession = LoginSession(clientId: appClientId, redirectUrl: appUrl, scope: appScope, request: request, acrValues: acrValues,
                                   serviceDiscoveryUrl: serviceDiscoveryUrl, hint: hint)
     } else {
@@ -200,7 +201,7 @@ internal enum GrantType : String {
       error = GrabIdPartnerError(code: errorCode, localizeMessage:errorMessage,
                                  domain: .loadConfiguration, serviceError: nil)
     }
-
+    
     DispatchQueue.main.async {
       completion(loginSession, error)
     }
@@ -224,7 +225,7 @@ internal enum GrantType : String {
       webLogin(loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
     }
   }
-
+  
   private func webLogin(loginSession: LoginSession, presentingViewController: UIViewController, completion: @escaping(GrabIdPartnerError?) -> Void) {
     // go through the in-app web authorization flow
     getAuthenticateURL(loginSession: loginSession) { (url, error) in
@@ -267,9 +268,9 @@ internal enum GrantType : String {
     
     guard errorParam?.value == nil else {
       let error = GrabIdPartnerError(code: .securityValidationFailed,
-                                      localizeMessage: GrabIdPartnerLocalization.securityValidationFailed.rawValue,
-                                      domain: .exchangeToken,
-                                      serviceError: nil)
+                                     localizeMessage: GrabIdPartnerLocalization.securityValidationFailed.rawValue,
+                                     domain: .exchangeToken,
+                                     serviceError: nil)
       DispatchQueue.main.async {
         completion(error)
       }
@@ -277,22 +278,22 @@ internal enum GrantType : String {
     }
     
     guard let code = codeParam?.value,
-          let state = stateParam?.value,
-          state == loginSession.state else {
-      let error = GrabIdPartnerError(code: .securityValidationFailed,
+      let state = stateParam?.value,
+      state == loginSession.state else {
+        let error = GrabIdPartnerError(code: .securityValidationFailed,
                                        localizeMessage:GrabIdPartnerLocalization.securityValidationFailed.rawValue,
                                        domain: .exchangeToken,
                                        serviceError: nil)
-      DispatchQueue.main.async {
-        completion(error)
-      }
-      return
+        DispatchQueue.main.async {
+          completion(error)
+        }
+        return
     }
     
     // read token from keychain, return token from cache if it hasn't expired
     if restoreLoginSession(loginSession: loginSession),
-        let accessTokenExpiresAt = loginSession.accessTokenExpiresAt,
-        accessTokenExpiresAt > Date() {
+      let accessTokenExpiresAt = loginSession.accessTokenExpiresAt,
+      accessTokenExpiresAt > Date() {
       // cached loginSession contains valid access token.
       DispatchQueue.main.async {
         completion(nil)
@@ -314,59 +315,59 @@ internal enum GrantType : String {
                        code: loginSession.code ?? "", codeVerifier: codeVerifier,
                        grantType: GrantType.authorizationCode, refreshToken: loginSession.refreshToken ?? "",
                        redirectUri: loginSession.redirectUrl.absoluteString, state: loginSession.state ?? "") { results, error in
-      guard error == nil, let results = results else {
-        _ = GrabIdPartner.removeLoginSession(loginSession: loginSession)
-        DispatchQueue.main.async {
-          completion(error)
-        }
-        return
-      }
+                        guard error == nil, let results = results else {
+                          _ = GrabIdPartner.removeLoginSession(loginSession: loginSession)
+                          DispatchQueue.main.async {
+                            completion(error)
+                          }
+                          return
+                        }
                         
-      // Extract results from Dictionary
-      let accessToken = results["access_token"] as? String
-      let expiresIn = results["expires_in"] as? Int
-      let idToken = results["id_token"] as? String
-      let refreshToken : String? = results["refresh_token"] as? String ?? ""
-      let tokenType = results["token_type"] as? String
-      
-      guard
-        let accessTokenValue = accessToken,
-        let expiresInValue = expiresIn,
-        let idTokenValue = idToken,
-        let refreshTokenValue = refreshToken,
-        let tokenTypeValue = tokenType
-        else {
-          let error = GrabIdPartnerError(code: .invalidResponse, localizeMessage:GrabIdPartnerLocalization.invalidResponse.rawValue,
-                                         domain: .exchangeToken, serviceError: nil)
-          DispatchQueue.main.async {
-            completion(error)
-          }
-          return
-      }
-      
-      guard
-        !accessTokenValue.isEmpty,
-        !String(expiresInValue).isEmpty
-        else {
-          let error = GrabIdPartnerError(code: .invalidResponse, localizeMessage:GrabIdPartnerLocalization.invalidResponse.rawValue,
-                                         domain: .exchangeToken, serviceError: nil)
-          DispatchQueue.main.async {
-            completion(error)
-          }
-          return
-      }
-      
-      loginSession.accessTokenExpiresAt = Date(timeIntervalSinceNow: Double(expiresInValue))
-      loginSession.accessToken = accessTokenValue
-      loginSession.refreshToken = refreshTokenValue
-      loginSession.tokenType = tokenTypeValue
-      loginSession.idToken = idTokenValue
-      
-      self.saveLoginSession(loginSession: loginSession)
-      
-      DispatchQueue.main.async {
-        completion(nil)
-      }
+                        // Extract results from Dictionary
+                        let accessToken = results["access_token"] as? String
+                        let expiresIn = results["expires_in"] as? Int
+                        let idToken = results["id_token"] as? String
+                        let refreshToken : String? = results["refresh_token"] as? String ?? ""
+                        let tokenType = results["token_type"] as? String
+                        
+                        guard
+                          let accessTokenValue = accessToken,
+                          let expiresInValue = expiresIn,
+                          let idTokenValue = idToken,
+                          let refreshTokenValue = refreshToken,
+                          let tokenTypeValue = tokenType
+                          else {
+                            let error = GrabIdPartnerError(code: .invalidResponse, localizeMessage:GrabIdPartnerLocalization.invalidResponse.rawValue,
+                                                           domain: .exchangeToken, serviceError: nil)
+                            DispatchQueue.main.async {
+                              completion(error)
+                            }
+                            return
+                        }
+                        
+                        guard
+                          !accessTokenValue.isEmpty,
+                          !String(expiresInValue).isEmpty
+                          else {
+                            let error = GrabIdPartnerError(code: .invalidResponse, localizeMessage:GrabIdPartnerLocalization.invalidResponse.rawValue,
+                                                           domain: .exchangeToken, serviceError: nil)
+                            DispatchQueue.main.async {
+                              completion(error)
+                            }
+                            return
+                        }
+                        
+                        loginSession.accessTokenExpiresAt = Date(timeIntervalSinceNow: Double(expiresInValue))
+                        loginSession.accessToken = accessTokenValue
+                        loginSession.refreshToken = refreshTokenValue
+                        loginSession.tokenType = tokenTypeValue
+                        loginSession.idToken = idTokenValue
+                        
+                        self.saveLoginSession(loginSession: loginSession)
+                        
+                        DispatchQueue.main.async {
+                          completion(nil)
+                        }
     }
   }
   
@@ -377,7 +378,7 @@ internal enum GrantType : String {
     loginSession.authorizationEndpoint = nil
     loginSession.idTokenVerificationEndpoint = nil
     loginSession.tokenEndpoint = nil
-
+    
     _ = loginCompleted(loginSession: loginSession)
     
     if GrabIdPartner.removeLoginSession(loginSession: loginSession),
@@ -395,16 +396,16 @@ internal enum GrantType : String {
       }
     }
   }
-
+  
   @objc public func getIdTokenInfo(loginSession: LoginSession, completion: @escaping (IdTokenInfo?, GrabIdPartnerError?) -> Void) {
     guard let idToken = loginSession.idToken,
-          let idTokenVerificationEndpoint = loginSession.idTokenVerificationEndpoint else {
-          let error = GrabIdPartnerError(code: .invalidIdToken, localizeMessage:GrabIdPartnerLocalization.invalidIdToken.rawValue,
-                                         domain: .getIdTokenInfo, serviceError: nil)
-      DispatchQueue.main.async {
-        completion(nil, error)
-      }
-      return
+      let idTokenVerificationEndpoint = loginSession.idTokenVerificationEndpoint else {
+        let error = GrabIdPartnerError(code: .invalidIdToken, localizeMessage:GrabIdPartnerLocalization.invalidIdToken.rawValue,
+                                       domain: .getIdTokenInfo, serviceError: nil)
+        DispatchQueue.main.async {
+          completion(nil, error)
+        }
+        return
     }
     
     guard let nonce = loginSession.nonce else {
@@ -438,7 +439,7 @@ internal enum GrantType : String {
           _ = GrabIdPartner.removeLoginSession(loginSession: loginSession)
           return
       }
-
+      
       // Extract results from Dictionary
       let audience = results["audience"] as? String
       let expiresAt = results["expires_at"] as? Double
@@ -450,26 +451,26 @@ internal enum GrantType : String {
       let partnerId = results["partnerId"] as? String
       let partnerUserId = results["partnerUserId"] as? String
       let service = results["service"] as? String
-        
+      
       guard let audienceIdValue = audience, !audienceIdValue.isEmpty,
-            let expiresAtValue = expiresAt,
-            let issuerValue = issuer,
-            let issueAtValue = issueAt,
-            let notValidBeforeValue = notValidBefore,
-            let nonceValue = nonce, !nonceValue.isEmpty,
-            let serviceValue = service, !serviceValue.isEmpty,
-            let partnerIdValue = partnerId, !partnerIdValue.isEmpty,
-            let partnerUserIdValue = partnerUserId, !partnerUserIdValue.isEmpty,
-            let tokenIdValue = tokenId, !tokenIdValue.isEmpty,
-            nonce == loginSession.nonce else {
-        let error = GrabIdPartnerError(code: .invalidNonce, localizeMessage:GrabIdPartnerLocalization.invalidNonce.rawValue,
-                                       domain: .getIdTokenInfo, serviceError: nil)
-        DispatchQueue.main.async {
-          completion(nil, error)
-        }
-        return
+        let expiresAtValue = expiresAt,
+        let issuerValue = issuer,
+        let issueAtValue = issueAt,
+        let notValidBeforeValue = notValidBefore,
+        let nonceValue = nonce, !nonceValue.isEmpty,
+        let serviceValue = service, !serviceValue.isEmpty,
+        let partnerIdValue = partnerId, !partnerIdValue.isEmpty,
+        let partnerUserIdValue = partnerUserId, !partnerUserIdValue.isEmpty,
+        let tokenIdValue = tokenId, !tokenIdValue.isEmpty,
+        nonce == loginSession.nonce else {
+          let error = GrabIdPartnerError(code: .invalidNonce, localizeMessage:GrabIdPartnerLocalization.invalidNonce.rawValue,
+                                         domain: .getIdTokenInfo, serviceError: nil)
+          DispatchQueue.main.async {
+            completion(nil, error)
+          }
+          return
       }
-     
+      
       let idTokenInfo = IdTokenInfo(audience: audienceIdValue,
                                     service: serviceValue,
                                     notValidBefore: Date(timeIntervalSince1970: notValidBeforeValue),
@@ -480,7 +481,7 @@ internal enum GrantType : String {
                                     partnerId: partnerIdValue,
                                     partnerUserid: partnerUserIdValue,
                                     nonce: nonceValue)
-
+      
       idTokenInfo.saveIdTokenInfo(loginSession: loginSession)
       
       DispatchQueue.main.async {
@@ -488,18 +489,35 @@ internal enum GrantType : String {
       }
     }
   }
-
+  
+  
   @objc public func loginCompleted(loginSession: LoginSession) -> Bool {
+    return loginCompleted(loginSession: loginSession, completion:nil)
+  }
+  
+  @objc public func loginCompleted(loginSession: LoginSession, completion:(()->Void)?) -> Bool {
     guard let safariView = loginSession.safariView else {
+      if let dismissHandler = completion {
+        DispatchQueue.main.async {
+          dismissHandler()
+        }
+      }
       return false
     }
     
-    safariView.dismiss(animated: true)
-    loginSession.safariView = nil
+    safariView.dismiss(animated: true) {
+      if let dismissHandler = completion {
+        DispatchQueue.main.async {
+          dismissHandler()
+        }
+        loginSession.safariView = nil
+      }
+    }
     
     return true
   }
-
+  
+  
   // Helper to determine if the accessToken and idToken are valid and not expired.
   @objc public func isValidAccessToken(loginSession: LoginSession) -> Bool {
     let now = Date()
@@ -512,7 +530,7 @@ internal enum GrantType : String {
     
     return true
   }
-
+  
   @objc public func isValidIdToken(idTokenInfo: IdTokenInfo) -> Bool {
     guard let nonce = idTokenInfo.nonce else {
       return false
@@ -535,7 +553,7 @@ internal enum GrantType : String {
     
     return "\(loginSession.clientId).\(sortedScope)"
   }
-
+  
   private struct Constants {
     struct Localize {
       static let invalidUrl = "Invalid service"
@@ -553,7 +571,7 @@ internal enum GrantType : String {
       static let refreshToken = "refreshToken"
     }
   }
-
+  
   // MARK: private functions
   private func getTokens(loginSession: LoginSession) -> Bool {
     let keyChain = KeychainTokenItem(service: loginSession.clientId)
@@ -616,11 +634,11 @@ internal enum GrantType : String {
   // and return false and delete the cache login session.
   private func restoreLoginSession(loginSession: LoginSession) -> Bool {
     guard let key = GrabIdPartner.getUserDefaultKey(loginSession: loginSession),
-          let cacheLoginSessionData = UserDefaults.standard.data(forKey: key),
-          let cacheLoginSession = NSKeyedUnarchiver.unarchiveObject(with: cacheLoginSessionData) as? LoginSession else {
-      return false
+      let cacheLoginSessionData = UserDefaults.standard.data(forKey: key),
+      let cacheLoginSession = NSKeyedUnarchiver.unarchiveObject(with: cacheLoginSessionData) as? LoginSession else {
+        return false
     }
-
+    
     // refresh token,access token, and idtoken are stored in the keychain and restored
     // in getTokens
     if getTokens(loginSession: loginSession) {
@@ -644,14 +662,14 @@ internal enum GrantType : String {
   static internal func removeLoginSession(loginSession: LoginSession) -> Bool {
     
     guard let key = GrabIdPartner.getUserDefaultKey(loginSession: loginSession),
-          UserDefaults.standard.data(forKey: key) != nil else {
-      return false
+      UserDefaults.standard.data(forKey: key) != nil else {
+        return false
     }
     
     // delete token cache
     UserDefaults.standard.removeObject(forKey: key)
     GrabIdPartner.removeTokens(loginSession: loginSession)
-
+    
     return true
   }
   
@@ -672,11 +690,11 @@ internal enum GrantType : String {
   fileprivate static func getAcrValuesString(acrValues : [String:String]?) -> String? {
     var acrValueString : String? = nil
     if let acrValues = acrValues,
-        acrValues.count > 0 {
+      acrValues.count > 0 {
       var acrValueArrays = [String]()
       for (key, value) in acrValues {
         if !key.isEmpty,
-            !value.isEmpty {
+          !value.isEmpty {
           acrValueArrays.append("\(key):\(value)")
         }
       }
@@ -689,12 +707,12 @@ internal enum GrantType : String {
   private func getAuthenticateURL(loginSession: LoginSession, completion: @escaping(URL?,GrabIdPartnerError?) -> Void) {
     let (nonce, state, codeVerifier, codeChallenge) = getSecurityValues()
     guard nonce != nil,
-          state != nil,
-          codeVerifier != nil,
-          codeChallenge != nil else {
-      let error = GrabIdPartnerError(code: .authorizationInitializationFailure, localizeMessage:GrabIdPartnerLocalization.authorizationInitializationFailure.rawValue, domain: .authorization, serviceError: nil)
-      completion(nil, error)
-      return
+      state != nil,
+      codeVerifier != nil,
+      codeChallenge != nil else {
+        let error = GrabIdPartnerError(code: .authorizationInitializationFailure, localizeMessage:GrabIdPartnerLocalization.authorizationInitializationFailure.rawValue, domain: .authorization, serviceError: nil)
+        completion(nil, error)
+        return
     }
     
     loginSession.nonce = nonce
@@ -715,9 +733,9 @@ internal enum GrantType : String {
     ]
     
     if !loginSession.hint.isEmpty {
-      queryParams.append(NSURLQueryItem(name: "id_token_hint", value: loginSession.hint))
+      queryParams.append(NSURLQueryItem(name: "login_hint", value: loginSession.hint))
     }
-
+    
     // handle optional parameters
     if let request = loginSession.request,
       !request.isEmpty {
@@ -725,22 +743,22 @@ internal enum GrantType : String {
     }
     
     if let acrValueString = GrabIdPartner.getAcrValuesString(acrValues: loginSession.acrValues),
-        !acrValueString.isEmpty {
+      !acrValueString.isEmpty {
       queryParams.append(NSURLQueryItem(name:"acr_values", value:acrValueString))
     }
-
+    
     if loginSession.authorizationEndpoint?.isEmpty ?? true {
       GrabApi.fetchServiceConfigurations(session: urlSession ?? .shared, serviceDiscoveryUrl:loginSession.serviceDiscoveryUrl) { (endPoints, error) in
         guard error == nil else {
           completion(nil, error)
           return
         }
-
+        
         // Extract results from Dictionary
         loginSession.authorizationEndpoint = endPoints.loginUri
         loginSession.tokenEndpoint = endPoints.exchangeUri
         loginSession.idTokenVerificationEndpoint = endPoints.verify
-
+        
         guard let authEndPoint = loginSession.authorizationEndpoint,
           !authEndPoint.isEmpty else {
             let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:GrabIdPartnerLocalization.invalidUrl.rawValue, domain: .authorization, serviceError: nil)
