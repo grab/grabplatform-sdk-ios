@@ -405,7 +405,15 @@ Return
   Return true if it is successful in dismissing the web login flow, false otherwise. 
 
 ```
+```
+loginCompleted(loginSession: LoginSession, completion:(()->Void)?) : Bool
 
+Application that handles their own redirect without calling the exchangeToken API must call the loginCompleted API. This  API is required to complete the in-app web authorization flow. It is the only way to dismiss the SFSafariViewController. If you provided a completion handler, the completion handler will be called after SafariViewController is dismissed.
+
+Return
+Return true if it is successful in dismissing the web login flow, false otherwise. 
+
+```
 ```
 logout(loginSession: LoginSession, completion: ((GrabIdPartnerError?)) : Void
 

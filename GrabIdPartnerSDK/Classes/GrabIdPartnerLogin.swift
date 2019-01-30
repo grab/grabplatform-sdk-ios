@@ -21,6 +21,7 @@ internal enum GrantType : String {
   func exchangeToken(loginSession: LoginSession, url: URL, completion: @escaping (GrabIdPartnerError?) -> Void)
   func getIdTokenInfo(loginSession: LoginSession, completion: @escaping (IdTokenInfo?, GrabIdPartnerError?) -> Void)
   func loginCompleted(loginSession: LoginSession) -> Bool
+  func loginCompleted(loginSession: LoginSession, completion:(()->Void)?) -> Bool
   func logout(loginSession: LoginSession, completion: ((GrabIdPartnerError?) -> Void)?)
   func isValidAccessToken(loginSession: LoginSession) -> Bool
   func isValidIdToken(idTokenInfo: IdTokenInfo) -> Bool
@@ -489,16 +490,33 @@ internal enum GrantType : String {
     }
   }
 
+  
   @objc public func loginCompleted(loginSession: LoginSession) -> Bool {
+    return loginCompleted(loginSession: loginSession, completion:nil)
+  }
+  
+  @objc public func loginCompleted(loginSession: LoginSession, completion:(()->Void)?) -> Bool {
     guard let safariView = loginSession.safariView else {
+      if let dismissHandler = completion {
+        DispatchQueue.main.async {
+          dismissHandler()
+        }
+      }
       return false
     }
     
-    safariView.dismiss(animated: true)
-    loginSession.safariView = nil
+    safariView.dismiss(animated: true) {
+      if let dismissHandler = completion {
+        DispatchQueue.main.async {
+          dismissHandler()
+        }
+        loginSession.safariView = nil
+      }
+    }
     
     return true
   }
+
 
   // Helper to determine if the accessToken and idToken are valid and not expired.
   @objc public func isValidAccessToken(loginSession: LoginSession) -> Bool {

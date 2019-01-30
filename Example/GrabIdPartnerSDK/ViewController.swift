@@ -313,8 +313,8 @@ class ViewController: UIViewController {
       guard let self = self else {
         return
       }
-      if !grabIdPartner.loginCompleted(loginSession: loginSession) {
-        self.logMessage(message: error?.localizeMessage ?? "loginCompleted failed!!!")
+      _ = grabIdPartner.loginCompleted(loginSession: loginSession) {
+        self.logMessage(message: error?.localizeMessage ?? "loginCompleted!!!")
       }
       
       if let error = error {
