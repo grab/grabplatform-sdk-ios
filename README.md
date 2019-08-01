@@ -32,7 +32,7 @@ If there are multiple Framework with same name in “Linked Frameworks and Libra
 Alternatively, the following command can be used in Podfile
 
 ```swift
-pod 'GrabIdPartnerSDK', :git => 'git@gitlab.myteksi.net:partner-engineering/grabplatform-sdk-ios.git', :tag => '1.0.1'
+pod 'GrabIdPartnerSDK', :git => 'https://github.com/grab/grabplatform-sdk-ios.git', :tag => '1.0.1'
 ```
 
 ## Getting Started
