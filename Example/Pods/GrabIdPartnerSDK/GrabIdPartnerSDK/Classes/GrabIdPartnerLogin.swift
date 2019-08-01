@@ -131,6 +131,7 @@ internal enum GrantType : String {
       return grabIdPartner
     } else {
       grabIdPartner = GrabIdPartner()
+      printVersion()
       return grabIdPartner
     }
   }
@@ -782,6 +783,17 @@ internal enum GrantType : String {
       let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidResponse.rawValue,
                                      domain: .authorization, serviceError: nil)
       completion(nil, error)
+    }
+  }
+}
+
+extension GrabIdPartner {
+  private static func printVersion() {
+    let bundleId = "org.cocoapods.GrabIdPartnerSDK"
+    if let version = Bundle(identifier: bundleId)?.infoDictionary?["CFBundleShortVersionString"] as? String {
+      print("================================================")
+      print("GrabIdPartnerSDK version \(version)")
+      print("================================================")
     }
   }
 }

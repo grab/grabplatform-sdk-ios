@@ -305,7 +305,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-GrabIdPartnerSDK_Example/Pods-GrabIdPartnerSDK_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-GrabIdPartnerSDK_Example/Pods-GrabIdPartnerSDK_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GrabIdPartnerSDK/GrabIdPartnerSDK.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -314,7 +314,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GrabIdPartnerSDK_Example/Pods-GrabIdPartnerSDK_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GrabIdPartnerSDK_Example/Pods-GrabIdPartnerSDK_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E2FD1AC5B6204D69EC96818D /* [CP] Check Pods Manifest.lock */ = {

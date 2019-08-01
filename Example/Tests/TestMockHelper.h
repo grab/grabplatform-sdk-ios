@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import "GrabIdPartnerSDK-Swift.h"
 
 // Helpers to provide mock responses to run unit tests.
 
