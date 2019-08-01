@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'GrabIdPartnerSDK'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'GrabIdPartner SDK for OAuth2.0 support.'
   s.description      = 'The GrabIdPartner SDK allows users to sign in with their Grab account from third-party apps.'
   s.homepage         = 'https://github.com/grab/grabplatform-sdk-ios'
