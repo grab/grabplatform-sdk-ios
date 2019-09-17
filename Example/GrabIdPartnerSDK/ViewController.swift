@@ -309,20 +309,19 @@ class ViewController: UIViewController {
     logMessage(message: "\rCalling exchangeToken API ->\r", isBold: true)
     logMessage(message: "Redirect Url:")
     logMessage(message: "\(url.absoluteString)")
-    grabIdPartner.exchangeToken(loginSession: loginSession, url: url) { [weak self] (error) in
-      guard let self = self else {
-        return
+    grabIdPartner.exchangeToken(loginSession: loginSession, url: url) { (error) in
+      DispatchQueue.main.async { [weak self] in
+        if let error = error {
+          self?.logMessage(message: error.localizeMessage ?? "exchangeToken failed!!!")
+        } else {
+          self?.printLoginSession(loginSession: loginSession)
+        }
+        _ = grabIdPartner.loginCompleted(loginSession: loginSession) {
+          self?.logMessage(message: error?.localizeMessage ?? "loginCompleted!!!")
+        }
+        
+        self?.setupUI()
       }
-      _ = grabIdPartner.loginCompleted(loginSession: loginSession) {
-        self.logMessage(message: error?.localizeMessage ?? "loginCompleted!!!")
-      }
-      
-      if let error = error {
-        self.logMessage(message: error.localizeMessage ?? "exchangeToken failed!!!")
-      } else {
-        self.printLoginSession(loginSession: loginSession)
-      }
-      self.setupUI()
     }
   }
   

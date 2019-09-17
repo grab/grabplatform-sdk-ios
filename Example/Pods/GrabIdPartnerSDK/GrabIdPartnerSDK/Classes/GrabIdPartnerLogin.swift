@@ -9,10 +9,12 @@
 import Foundation
 import SafariServices
 
-internal enum GrantType : String {
+enum GrantType : String {
   case authorizationCode = "authorization_code"
   case refreshToken = "refresh_token"
 }
+
+class GrabIdPartnerSDKLock {}
 
 @objc public protocol GrabIdPartnerProtocol {
   static func sharedInstance() -> GrabIdPartnerProtocol?
@@ -116,9 +118,10 @@ internal enum GrantType : String {
 
 @objc open class GrabIdPartner : NSObject, GrabIdPartnerProtocol {
   static private var grabIdPartner : GrabIdPartner? = nil
+  static let grabIdSdkLock = GrabIdPartnerSDKLock()
   
   private let codeChallengeMethod = "S256"
-  private let deviceId = UIDevice.current.identifierForVendor!.uuidString
+  private let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? ""
   private let authorization_grantType = "authorization_code"
   private let grantType = "refresh_token"
   private let responseType = "code"
@@ -127,6 +130,8 @@ internal enum GrantType : String {
   private let bundle: Bundle?
   
   @objc static public func sharedInstance() -> GrabIdPartnerProtocol? {
+    objc_sync_enter(GrabIdPartner.grabIdSdkLock)
+    defer { objc_sync_exit(GrabIdPartner.grabIdSdkLock) }
     if grabIdPartner != nil {
       return grabIdPartner
     } else {

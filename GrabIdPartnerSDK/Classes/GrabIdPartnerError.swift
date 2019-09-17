@@ -15,6 +15,7 @@ import Foundation
   case getIdTokenInfo
   case logout
   case protectedResource
+  case customProtocolsService
 }
 
 @objc public enum GrabIdPartnerErrorCode : Int {
@@ -43,6 +44,8 @@ import Foundation
   case invalidAccessToken             // The access token is invalid.
   case invalidResponse                // Unexpected response from GrabId service
   case invalidServiceDiscoveryUrl     // Invalid service discovery url
+  case invalidAppBundle               // Missing bundle
+  case invalidCustomProtocolUrl       // Invalid custom protocol url to get the Grab app deeplinks.
   
   case partnerAppError = 10000               // app defined errors are 10000 and above
   // more to come ...
@@ -78,6 +81,8 @@ import Foundation
   case invalidScope
   case invalidRedirectUrl
   case serviceError
+  case invalidAppBundle
+  case invalidCustomProtocolUrl
     
   public typealias RawValue = String
     
@@ -96,6 +101,8 @@ import Foundation
       case .invalidRedirectUrl: return Localization.invalidRedirectUrl
       case .invalidConfiguration: return Localization.invalidConfiguration
       case .serviceError: return Localization.serviceError
+      case .invalidAppBundle: return Localization.invalidAppBundle
+      case .invalidCustomProtocolUrl: return Localization.invalidCustomProtocolUrl
     }
   }
     
@@ -114,6 +121,8 @@ import Foundation
       case Localization.invalidRedirectUrl: self = .invalidRedirectUrl
       case Localization.invalidConfiguration: self = .invalidConfiguration
       case Localization.serviceError: self = .serviceError
+      case Localization.invalidAppBundle: self = .invalidAppBundle
+      case Localization.invalidCustomProtocolUrl: self = .invalidCustomProtocolUrl
       
       default: self = .somethingWentWrong
     }
@@ -133,5 +142,7 @@ import Foundation
     static let invalidScope = "Invalid scope."
     static let invalidRedirectUrl = "Invalid redirect url."
     static let serviceError = "GrabId service error."
+    static let invalidAppBundle = "App bundle is invalid"
+    static let invalidCustomProtocolUrl = "Invalid custom protocol url"
   }
 }

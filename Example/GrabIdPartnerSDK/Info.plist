@@ -33,6 +33,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>grabconnect</string>
+		<string>grab</string>
+		<string>grabdriver</string>
+	</array>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
@@ -53,7 +59,7 @@
 	<key>GrabIdPartnerSDK</key>
 	<dict>
 		<key>ClientId</key>
-		<string>&lt;please obtain client id from the Grab id team to run the example&gt;</string>
+		<string>f795769ebe7446f38dede8fd36ee32fd</string>
 		<key>Hint</key>
 		<string></string>
 		<key>RedirectUrl</key>
@@ -61,9 +67,13 @@
 		<key>Scope</key>
 		<string>gid_test_scope_1 gid_test_scope_2 gid_test_scope_3 openid</string>
 		<key>ServiceDiscoveryUrl</key>
-		<string>&lt;please obtain the service discovery endpoint from the Grab Id team&gt;</string>
+		<string>https://api.stg-myteksi.com/grabid/v1/oauth2/.well-known/openid-configuration</string>
 		<key>TestProtectedResourceUrl</key>
-		<string>&lt;please obtain the test resource end point from the Grab Id team&gt;</string>
+		<string>https://api.stg-myteksi.com/grabid/v1/oauth2/test_res</string>
+		<key>IdTokenHint</key>
+		<string></string>
+		<key>prompt</key>
+		<string></string>
 	</dict>
 </dict>
 </plist>

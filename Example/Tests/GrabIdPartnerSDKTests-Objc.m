@@ -10,7 +10,7 @@
 @import SafariServices;
 @import GrabIdPartnerSDK;
 @import Pods_GrabIdPartnerSDK_Tests;
-#import <GrabIdPartnerSDK/GrabIdPartnerSDK-Swift.h>
+
 #import "TestMockHelper.h"
 
 // Tests to show how to call the GrabId Partner SDK with Objective-C. There are unit tests to cover the SDK APIs. The purpose of
@@ -65,7 +65,6 @@
     XCTAssertTrue([loginSession.acrValues[@"acrKey1"] isEqualToString:@"acrValue1"]);
     XCTAssertTrue([loginSession.acrValues[@"acrKey2"] isEqualToString:@"acrValue2"]);
     XCTAssertNotNil(loginSession.request);
-    XCTAssertTrue([loginSession.request isEqualToString:@"test request"]);
     XCTAssertTrue([loginSession.request isEqualToString:@"test request"]);
     [expectation fulfill];
   }];
