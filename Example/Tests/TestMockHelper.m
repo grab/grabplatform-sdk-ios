@@ -10,7 +10,6 @@
 @import SafariServices;
 @import GrabIdPartnerSDK;
 @import Pods_GrabIdPartnerSDK_Tests;
-#import <GrabIdPartnerSDK/GrabIdPartnerSDK-Swift.h>
 #import "TestMockHelper.h"
 
 // Helpers to provide mock responses to run unit tests - implementation

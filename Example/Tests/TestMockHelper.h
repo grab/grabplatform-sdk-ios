@@ -13,41 +13,41 @@
 
 @interface MockLoginUIViewController : UIViewController
 
-- (void)presentViewController:(UIViewController *)viewControllerToPresent animated: (BOOL)flag completion:(void (^ __nullable)(void))completion ;
-@property(nonatomic,retain) UIViewController *controllerPresented;
+- (void)presentViewController:(UIViewController *_Nullable)viewControllerToPresent animated: (BOOL)flag completion:(void (^ __nullable)(void))completion ;
+@property(nonatomic,retain) UIViewController * _Nullable controllerPresented;
 @end
 
 @protocol MockResponseDataProtocol
-@property(nonatomic,retain) NSString *mockResponse;
-- init:(NSString *) mockResponse;
+@property(nonatomic,retain) NSString * _Nonnull mockResponse;
+- init:(NSString *_Nullable) mockResponse;
 @end
 
 @interface MockExchangeTokenResponseData : NSObject<MockResponseDataProtocol>
-@property(nonatomic,retain) NSString *mockResponse;
-- init:(NSString *) mockResponse;
+@property(nonatomic,retain) NSString * _Nullable mockResponse;
+- init:(NSString *_Nullable) mockResponse;
 @end
 
 @interface MockConfigurationResponseData : NSObject<MockResponseDataProtocol>
-@property(nonatomic,retain) NSString *mockResponse;
-- init:(NSString *) mockResponse;
+@property(nonatomic,retain) NSString * _Nullable mockResponse;
+- init:(NSString *_Nullable) mockResponse;
 @end
 
 @interface MockTokenInfoResponseData : NSObject<MockResponseDataProtocol>
-@property(nonatomic,retain) NSString *mockResponse;
-@property(nonatomic,retain) NSString *nonce;
+@property(nonatomic,retain) NSString * _Nullable mockResponse;
+@property(nonatomic,retain) NSString * _Nullable nonce;
 
-- init:(NSString *) mockResponse;
+- init:(NSString *_Nullable) mockResponse;
 @end
 
 // MockURLSessionDataTask
 @interface MockURLSessionDataTask : NSURLSessionDataTask
 
-typedef void(^CompletionHandler)(NSData *, NSURLResponse *, NSError *);
+typedef void(^CompletionHandler)(NSData *_Nullable, NSURLResponse *_Nullable, NSError *_Nullable);
 
-@property (nonatomic, copy) CompletionHandler completion;
-@property(nonatomic,retain) NSURLResponse *mockResponse;
-@property(nonatomic,retain) NSError *mockError;
-@property(nonatomic,retain) NSData *mockData;
+@property (nonatomic, copy) CompletionHandler _Nullable completion;
+@property(nonatomic,retain) NSURLResponse * _Nullable mockResponse;
+@property(nonatomic,retain) NSError * _Nullable mockError;
+@property(nonatomic,retain) NSData * _Nullable mockData;
 
 - (void)resume;
 @end
@@ -67,11 +67,11 @@ typedef NS_ENUM(NSUInteger, MockResponseType) {
   errorResponse = 2
 };
 
-@property(nonatomic,retain) NSURLResponse *mockResponse;
-@property(nonatomic,retain) MockURLSessionDataTask *mockDataTask;
-@property (nonatomic, retain) NSMutableDictionary *serviceErrorDictionary;
+@property(nonatomic,retain) NSURLResponse * _Nullable mockResponse;
+@property(nonatomic,retain) MockURLSessionDataTask * _Nullable mockDataTask;
+@property (nonatomic, retain) NSMutableDictionary * _Nullable serviceErrorDictionary;
 
-@property(nonatomic,assign) NSString *nonce;
+@property(nonatomic,assign) NSString * _Nullable nonce;
 
 @property (nonatomic, assign) UrlType urlType;
 @property (nonatomic, assign) MockResponseType responseType;

@@ -9,10 +9,12 @@
 import Foundation
 import SafariServices
 
-internal enum GrantType : String {
+enum GrantType : String {
   case authorizationCode = "authorization_code"
   case refreshToken = "refresh_token"
 }
+
+class GrabIdPartnerSdkLock {}
 
 @objc public protocol GrabIdPartnerProtocol {
   static func sharedInstance() -> GrabIdPartnerProtocol?
@@ -32,6 +34,8 @@ internal enum GrantType : String {
   @objc public let redirectUrl : URL
   @objc public let scope : String
   @objc public let hint : String
+  @objc public let idTokenHint : String
+  @objc public let prompt : String
 
   // Used by app for one time transactions scenario - base64 encoded jwt
   @objc public let request : String?
@@ -53,7 +57,7 @@ internal enum GrantType : String {
   @objc public fileprivate(set) var idToken : String? = nil
   @objc public fileprivate(set) var refreshToken : String? = nil
   @objc public fileprivate(set) var serviceDiscoveryUrl : String
-  
+
   // internal to GrabId Partner SDK
   fileprivate var safariView : SFSafariViewController? = nil
 
@@ -63,9 +67,10 @@ internal enum GrantType : String {
   fileprivate var authorizationEndpoint : String?
   fileprivate var tokenEndpoint : String?
   fileprivate var idTokenVerificationEndpoint : String?
-  
+  fileprivate var clientPublicInfoEndpoint: String?
+ 
   @objc public init(clientId : String, redirectUrl : URL, scope: String, request: String? = nil, acrValues: [String:String]? = nil,
-                    serviceDiscoveryUrl: String, hint : String = "") {
+                    serviceDiscoveryUrl: String, hint: String = "", idTokenHint: String = "", prompt:String = "") {
     self.clientId = clientId
     self.redirectUrl = redirectUrl
     self.scope = scope
@@ -73,6 +78,16 @@ internal enum GrantType : String {
     self.request = request
     self.acrValues = acrValues
     self.hint = hint
+    self.idTokenHint = idTokenHint
+    self.prompt = prompt
+    
+    super.init()
+  }
+
+  @objc public convenience init(clientId : String, redirectUrl : URL, scope: String, request: String? = nil, acrValues: [String:String]? = nil,
+                    serviceDiscoveryUrl: String, hint: String = "") {
+    self.init(clientId: clientId, redirectUrl:redirectUrl, scope: scope, request: request, acrValues: acrValues,
+              serviceDiscoveryUrl: serviceDiscoveryUrl, hint: hint, prompt: "")
   }
   
   public func encode(with aCoder: NSCoder) {
@@ -87,6 +102,9 @@ internal enum GrantType : String {
     aCoder.encode(tokenEndpoint, forKey: "tokenEndpoint")
     aCoder.encode(authorizationEndpoint, forKey: "authorizationEndpoint")
     aCoder.encode(idTokenVerificationEndpoint, forKey: "idTokenVerificationEndpoint")
+    aCoder.encode(clientPublicInfoEndpoint, forKey: "clientPublicInfoEndpoint")
+    aCoder.encode(idTokenHint,forKey: "idTokenHint")
+    aCoder.encode(prompt,forKey: "prompt")
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -99,7 +117,6 @@ internal enum GrantType : String {
     self.scope = ""
     self.request = ""
     self.acrValues = nil
-    self.hint = ""
     
     self.code = aDecoder.decodeObject(forKey:"code") as? String
     self.codeVerifier = aDecoder.decodeObject(forKey:"codeVerifier") as? String
@@ -111,14 +128,19 @@ internal enum GrantType : String {
     self.tokenEndpoint = aDecoder.decodeObject(forKey:"tokenEndpoint") as? String
     self.authorizationEndpoint = aDecoder.decodeObject(forKey:"authorizationEndpoint") as? String
     self.idTokenVerificationEndpoint = aDecoder.decodeObject(forKey:"idTokenVerificationEndpoint") as? String
+    self.clientPublicInfoEndpoint = aDecoder.decodeObject(forKey:"clientPublicInfoEndpoint") as? String
+    self.hint = aDecoder.decodeObject(forKey:"hint") as? String ?? ""
+    self.idTokenHint = aDecoder.decodeObject(forKey:"idTokenHint") as? String ?? ""
+    self.prompt = aDecoder.decodeObject(forKey:"prompt") as? String ?? ""
   }
 }
 
 @objc open class GrabIdPartner : NSObject, GrabIdPartnerProtocol {
   static private var grabIdPartner : GrabIdPartner? = nil
+  static private let grabIdPartnerSdkLock = GrabIdPartnerSdkLock()
 
   private let codeChallengeMethod = "S256"
-  private let deviceId = UIDevice.current.identifierForVendor!.uuidString
+  private let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? ""
   private let authorization_grantType = "authorization_code"
   private let grantType = "refresh_token"
   private let responseType = "code"
@@ -127,6 +149,9 @@ internal enum GrantType : String {
   private let bundle: Bundle?
 
   @objc static public func sharedInstance() -> GrabIdPartnerProtocol? {
+    objc_sync_enter(GrabIdPartner.grabIdPartnerSdkLock)
+    defer { objc_sync_exit(GrabIdPartner.grabIdPartnerSdkLock) }
+    
     if grabIdPartner != nil {
       return grabIdPartner
     } else {
@@ -138,11 +163,13 @@ internal enum GrantType : String {
   @objc public init(bundle: Bundle = Bundle.main) {
     self.urlSession = .shared
     self.bundle = bundle
+    super.init()
   }
 
   @objc public init(urlSession: URLSession = .shared, bundle: Bundle = Bundle.main) {
     self.urlSession = urlSession
     self.bundle = bundle
+    super.init()
   }
   
   @objc public func loadLoginSession(completion: @escaping(LoginSession?, GrabIdPartnerError?) -> Void) {
@@ -154,10 +181,16 @@ internal enum GrantType : String {
     var loginSession : LoginSession? = nil
     var error : GrabIdPartnerError? = nil
     var acrValues : [String:String]? = nil
-    var hint : String? = nil
+    var hint : String = ""
+    var idTokenHint : String = ""
+    var prompt : String = ""
 
     guard let bundle = bundle else {
-      assertionFailure("failed to load bundle")
+      DispatchQueue.main.async {
+        let error = GrabIdPartnerError(code: .invalidAppBundle, localizeMessage:GrabIdPartnerLocalization.invalidAppBundle.rawValue,
+                                   domain: .loadConfiguration, serviceError: nil)
+        completion(nil, error)
+      }
       return
     }
     
@@ -171,20 +204,35 @@ internal enum GrantType : String {
       request = config["Request"] as? String
       acrValues = config["AcrValues"] as? Dictionary<String, String>
       hint = config["Hint"] as? String ?? ""
+      idTokenHint = config["IdTokenHint"] as? String ?? idTokenHint
+      prompt = config["prompt"] as? String ?? prompt
+      
+      (loginSession, error) = createLoginSession(clientId: clientId, redirectUrl: redirectUrl, scope: scope, request: request,
+                                                   acrValues: acrValues, serviceDiscoveryUrl: serviceDiscoveryUrl,
+                                                   hint: hint, idTokenHint: idTokenHint, prompt: prompt)
     } else {
       error = GrabIdPartnerError(code: .invalidConfiguration, localizeMessage:GrabIdPartnerLocalization.invalidConfiguration.rawValue,
                                  domain: .loadConfiguration, serviceError: nil)
     }
 
-    if let appClientId = clientId,
-       let appScope = scope,
+    DispatchQueue.main.async {
+      completion(loginSession, error)
+    }
+  }
+  
+  public func createLoginSession(clientId: String?, redirectUrl: String?, scope: String?,
+                                  request: String? = nil, acrValues: [String:String]? = nil, serviceDiscoveryUrl: String?,
+                                  hint: String = "", idTokenHint: String = "", prompt:String = "") -> (LoginSession?, GrabIdPartnerError?) {
+    if let appClientId = clientId, !appClientId.isEmpty,
+       let appScope = scope, !appScope.isEmpty,
        let appRedirectUrl = redirectUrl,
        let appUrl = URL(string: appRedirectUrl),
-       let serviceDiscoveryUrl = serviceDiscoveryUrl,
-       let hint = hint {
-      loginSession = LoginSession(clientId: appClientId, redirectUrl: appUrl, scope: appScope, request: request, acrValues: acrValues,
-                                  serviceDiscoveryUrl: serviceDiscoveryUrl, hint: hint)
+       let serviceDiscoveryUrl = serviceDiscoveryUrl {
+      var loginSession: LoginSession? = nil
+      loginSession = LoginSession(clientId: appClientId, redirectUrl: appUrl, scope: appScope, request: request, acrValues: acrValues, serviceDiscoveryUrl: serviceDiscoveryUrl, hint: hint, idTokenHint: idTokenHint)
+      return (loginSession, nil)
     } else {
+      var error : GrabIdPartnerError? = nil
       var errorCode = GrabIdPartnerErrorCode.somethingWentWrong
       var errorMessage = GrabIdPartnerLocalization.somethingWentWrong.rawValue
       if clientId?.isEmpty ?? true {
@@ -200,10 +248,7 @@ internal enum GrantType : String {
       
       error = GrabIdPartnerError(code: errorCode, localizeMessage:errorMessage,
                                  domain: .loadConfiguration, serviceError: nil)
-    }
-
-    DispatchQueue.main.async {
-      completion(loginSession, error)
+      return (nil, error)
     }
   }
   
@@ -222,40 +267,87 @@ internal enum GrantType : String {
       loginSession.accessTokenExpiresAt ?? now > now {
       completion(nil)
     } else {
-      webLogin(loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
-    }
-  }
-
-  private func webLogin(loginSession: LoginSession, presentingViewController: UIViewController, completion: @escaping(GrabIdPartnerError?) -> Void) {
-    // go through the in-app web authorization flow
-    getAuthenticateURL(loginSession: loginSession) { (url, error) in
-      if let error = error {
-        DispatchQueue.main.async {
-          completion(error)
-        }
-        return
-      }
-      
-      guard let url = url else {
-        let error = GrabIdPartnerError(code: .invalidUrl,
-                                       localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidUrl.rawValue,
-                                       domain: .authorization,
-                                       serviceError: nil)
-        DispatchQueue.main.async {
-          completion(error)
-        }
-        return
-      }
-      
-      DispatchQueue.main.async {
-        loginSession.safariView = SFSafariViewController(url: url)
-        if let safariView = loginSession.safariView {
-          presentingViewController.present(safariView, animated: true)
-          DispatchQueue.main.async {
-            completion(nil)
+      getAuthenticateURL(loginSession: loginSession) { authUrl, loginWithGrabUrl, error in
+        DispatchQueue.main.async { [weak self] in
+          if let error = error  {
+            completion(error)
+            return
+          }
+          
+          if #available(iOS 10.0, *),
+             let loginWithGraburl = loginWithGrabUrl {
+            UIApplication.shared.open(loginWithGraburl, options: [:], completionHandler: { (success) in
+              if !success {
+                self?.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
+              }
+            })
+          } else {
+            self?.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
           }
         }
       }
+    }
+  }
+
+  private func getLoginWithGrabDeepLink(loginWithGrabDict: [[String:String]]) -> String? {
+    guard loginWithGrabDict.count > 0 else {
+      return nil
+    }
+    
+    if let preferredLoginWithGrabInfo = loginWithGrabDict.first {
+      return preferredLoginWithGrabInfo["protocol_ios"]
+    }
+    return nil
+  }
+
+  private func getLoginWithGrabURLScheme(loginWithGrabDict: [[String:String]]) -> String? {
+    guard loginWithGrabDict.count > 0 else {
+      return nil
+    }
+    
+    if let preferredLoginWithGrabInfo = loginWithGrabDict.first {
+      return preferredLoginWithGrabInfo["protocol_pax_ios"]
+    }
+    return nil
+  }
+  
+  private func schemeAvailable(urlScheme: String) -> Bool {
+    if let url = URL(string: urlScheme) {
+      return UIApplication.shared.canOpenURL(url)
+    }
+    return false
+  }
+  
+  private func launchDeeplink(deeplinkUrl: String) {
+    if #available(iOS 10.0, *) {
+      if let url = URL(string: deeplinkUrl) {
+        UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
+          debugPrint("Open \(deeplinkUrl): \(success)")
+        })
+      }
+    } else {
+      debugPrint("GrabIdPartnerSDK: launchDeeplink failed, minimum iOS version is 10.0.")
+    }
+  }
+  
+  private func loginWithGrabApp(loginUrl: URL) -> Bool {
+    return false
+  }
+  
+  private func webLogin(url: URL?, loginSession: LoginSession, presentingViewController: UIViewController, completion: @escaping(GrabIdPartnerError?) -> Void) {
+    guard let url = url else {
+      let error = GrabIdPartnerError(code: .invalidUrl,
+                                      localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidUrl.rawValue,
+                                      domain: .authorization,
+                                      serviceError: nil)
+      completion(error)
+      return
+    }
+      
+    loginSession.safariView = SFSafariViewController(url: url)
+    if let safariView = loginSession.safariView {
+      presentingViewController.present(safariView, animated: true)
+      completion(nil)
     }
   }
   
@@ -703,15 +795,56 @@ internal enum GrantType : String {
     
     return acrValueString
   }
+
+  private func getLoginWithGrabDeeplinkDictionary(clientId: String, clientPublicInfoUri: String?, completion:@escaping([[String:String]],GrabIdPartnerError?) -> Void) {
+    if let clientPublicInfoUri = clientPublicInfoUri, !clientPublicInfoUri.isEmpty {
+      let fullClientPublicInfoUri = clientPublicInfoUri.replacingOccurrences(of: "{client_id}", with: clientId, options: .literal, range: nil)
+      GrabApi.fetchGrabAppDeeplinks(session: urlSession ?? .shared, customProtocolUrl:fullClientPublicInfoUri) { (loginWithGrabDict, error) in
+        completion(loginWithGrabDict, error)
+      }
+    } else {
+      // service has no app registered to handle login with Grab
+      completion([], nil)
+    }
+  }
   
-  private func getAuthenticateURL(loginSession: LoginSession, completion: @escaping(URL?,GrabIdPartnerError?) -> Void) {
+  private func getLoginUrls(loginSession: LoginSession, queryParams: [URLQueryItem], completion: @escaping(URL?,URL?,GrabIdPartnerError?) -> Void) {
+    guard let authEndpoint = loginSession.authorizationEndpoint, let authUrl = GrabApi.createUrl(baseUrl: authEndpoint, params: queryParams) else {
+      let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidResponse.rawValue,
+                                     domain: .authorization, serviceError: nil)
+      completion(nil, nil, error)
+      return
+    }
+    
+    // get the login with grab deeplink (if any),
+    var loginWithGrabAppUrl: URL? = nil
+    
+    getLoginWithGrabDeeplinkDictionary(clientId: loginSession.clientId, clientPublicInfoUri: loginSession.clientPublicInfoEndpoint) { [weak self] loginWithGrabDict, error in
+      if error == nil, let loginDeeplink = self?.getLoginWithGrabDeepLink(loginWithGrabDict: loginWithGrabDict) {
+        var params = queryParams
+        params.append(URLQueryItem(name: "auth_endpoint", value: authEndpoint))
+        loginWithGrabAppUrl = GrabApi.createUrl(baseUrl: loginDeeplink, params: params)
+      }
+      
+      DispatchQueue.main.async {
+        let validateURLScheme = self?.getLoginWithGrabURLScheme(loginWithGrabDict: loginWithGrabDict) ?? ""
+        if let deeplinkUrl = loginWithGrabAppUrl,
+          !(self?.schemeAvailable(urlScheme: validateURLScheme.isEmpty ? deeplinkUrl.absoluteString : validateURLScheme) ?? false) {
+          loginWithGrabAppUrl = nil
+        }
+        completion(authUrl, loginWithGrabAppUrl, nil)
+      }
+    }
+  }
+  
+  private func getAuthenticateURL(loginSession: LoginSession, completion: @escaping(URL?,URL?,GrabIdPartnerError?) -> Void) {
     let (nonce, state, codeVerifier, codeChallenge) = getSecurityValues()
     guard nonce != nil,
           state != nil,
           codeVerifier != nil,
           codeChallenge != nil else {
       let error = GrabIdPartnerError(code: .authorizationInitializationFailure, localizeMessage:GrabIdPartnerLocalization.authorizationInitializationFailure.rawValue, domain: .authorization, serviceError: nil)
-      completion(nil, error)
+            completion(nil, nil, error)
       return
     }
     
@@ -721,36 +854,46 @@ internal enum GrantType : String {
     loginSession.codeChallenge = codeChallenge
     
     var queryParams = [
-      NSURLQueryItem(name: "client_id", value: loginSession.clientId),
-      NSURLQueryItem(name: "code_challenge", value: codeChallenge),
-      NSURLQueryItem(name: "code_challenge_method", value: codeChallengeMethod),
-      NSURLQueryItem(name: "device_id", value: deviceId),
-      NSURLQueryItem(name: "nonce", value: nonce),
-      NSURLQueryItem(name: "redirect_uri", value: loginSession.redirectUrl.absoluteString),
-      NSURLQueryItem(name: "response_type", value: responseType),
-      NSURLQueryItem(name: "state", value: state),
-      NSURLQueryItem(name: "scope", value: loginSession.scope)
+      URLQueryItem(name: "client_id", value: loginSession.clientId),
+      URLQueryItem(name: "code_challenge", value: codeChallenge),
+      URLQueryItem(name: "code_challenge_method", value: codeChallengeMethod),
+      URLQueryItem(name: "device_id", value: deviceId),
+      URLQueryItem(name: "nonce", value: nonce),
+      URLQueryItem(name: "redirect_uri", value: loginSession.redirectUrl.absoluteString),
+      URLQueryItem(name: "response_type", value: responseType),
+      URLQueryItem(name: "state", value: state),
+      URLQueryItem(name: "scope", value: loginSession.scope)
     ]
     
     if !loginSession.hint.isEmpty {
-      queryParams.append(NSURLQueryItem(name: "login_hint", value: loginSession.hint))
+      queryParams.append(URLQueryItem(name: "login_hint", value: loginSession.hint))
+    }
+
+    if !loginSession.idTokenHint.isEmpty {
+      queryParams.append(URLQueryItem(name: "id_token_hint", value: loginSession.idTokenHint))
+    }
+
+    if !loginSession.prompt.isEmpty {
+      queryParams.append(URLQueryItem(name: "prompt", value: loginSession.prompt))
     }
 
     // handle optional parameters
     if let request = loginSession.request,
       !request.isEmpty {
-      queryParams.append(NSURLQueryItem(name: "request", value: request))
+      queryParams.append(URLQueryItem(name: "request", value: request))
     }
     
     if let acrValueString = GrabIdPartner.getAcrValuesString(acrValues: loginSession.acrValues),
         !acrValueString.isEmpty {
-      queryParams.append(NSURLQueryItem(name:"acr_values", value:acrValueString))
+      queryParams.append(URLQueryItem(name:"acr_values", value:acrValueString))
     }
 
-    if loginSession.authorizationEndpoint?.isEmpty ?? true {
-      GrabApi.fetchServiceConfigurations(session: urlSession ?? .shared, serviceDiscoveryUrl:loginSession.serviceDiscoveryUrl) { (endPoints, error) in
-        guard error == nil else {
-          completion(nil, error)
+    if let authEndpoint = loginSession.authorizationEndpoint, !authEndpoint.isEmpty {
+      getLoginUrls(loginSession: loginSession, queryParams: queryParams, completion:completion)
+    } else {
+      GrabApi.fetchServiceConfigurations(session: urlSession ?? .shared, serviceDiscoveryUrl:loginSession.serviceDiscoveryUrl) { [weak self](endPoints, error) in
+        guard error == nil, let strongSelf = self else {
+          completion(nil, nil, error)
           return
         }
 
@@ -758,30 +901,10 @@ internal enum GrantType : String {
         loginSession.authorizationEndpoint = endPoints.loginUri
         loginSession.tokenEndpoint = endPoints.exchangeUri
         loginSession.idTokenVerificationEndpoint = endPoints.verify
-
-        guard let authEndPoint = loginSession.authorizationEndpoint,
-          !authEndPoint.isEmpty else {
-            let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:GrabIdPartnerLocalization.invalidUrl.rawValue, domain: .authorization, serviceError: nil)
-            completion(nil, error)
-            return
-        }
+        loginSession.clientPublicInfoEndpoint = endPoints.clientPublicInfoUri
         
-        if let url = GrabApi.createUrl(baseUrl: authEndPoint, params: queryParams) {
-          completion(url, nil)
-          return
-        }
-        
-        let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:authEndPoint, domain: .authorization, serviceError: nil)
-        completion(nil, error)
+        strongSelf.getLoginUrls(loginSession: loginSession, queryParams: queryParams, completion:completion)
       }
-    } else {
-      if let loginUri = loginSession.authorizationEndpoint, let url = GrabApi.createUrl(baseUrl: loginUri, params: queryParams) {
-        completion(url, nil)
-        return
-      }
-      let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidResponse.rawValue,
-                                     domain: .authorization, serviceError: nil)
-      completion(nil, error)
     }
   }
 }

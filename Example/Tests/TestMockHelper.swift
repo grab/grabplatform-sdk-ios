@@ -16,6 +16,7 @@ internal enum UrlSubstring : String {
   case refreshToken = "refresh_token"
   case tokenInfo = "token_info?"
   case configuration = "configuration"
+  case customProtocol = "customprotocol"
 }
 
 // Mock response to use in the plist
@@ -41,6 +42,7 @@ public enum MockResponseType : String {
   public var mockResponseType = MockResponseType.validResponse
   
   private var serviceConfigurationEndPoint : String = ""
+  private var customProtocolEndPoint : String = ""
   public var serviceErrorDictionary : [String:Int] = [:]
   
   var url: NSURL?
@@ -75,65 +77,74 @@ public enum MockResponseType : String {
   }
   
   @objc override public func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-    guard let url = request.url else {
+    guard let url = request.url,
+          let infoPlist = Bundle(for: GrabIdPartnerSDKTests.self).infoDictionary,
+          let mockDataDict = infoPlist["MockJSONResponses"] as? Dictionary<String, AnyObject> else {
       return self.dataTaskMock
     }
+    
+  var mockResponse = ""
+  var httpStatusCode = 400
 
-    if let infoPlist = Bundle(for: GrabIdPartnerSDKTests.self).infoDictionary,
-       let mockDataDict = infoPlist["MockJSONResponses"] as? Dictionary<String, AnyObject> {
-      var mockResponse = ""
-      var httpStatusCode = 400
-
-      if url.absoluteString.contains(serviceConfigurationEndPoint) {
-        if let configDict = mockDataDict[UrlSubstring.configuration.rawValue] {
-          httpStatusCode = serviceErrorDictionary[UrlSubstring.configuration.rawValue] ?? 200
-          if httpStatusCode == 200 {
-            mockResponse = configDict[MockResponseType.validResponse.rawValue] as? String ?? ""
-          } else {
-            mockResponse = configDict[MockResponseType.errorResponse.rawValue] as? String ?? ""
-          }
-        }
-
-        completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
+  if url.absoluteString.contains(serviceConfigurationEndPoint) {
+    if let configDict = mockDataDict[UrlSubstring.configuration.rawValue] {
+      httpStatusCode = serviceErrorDictionary[UrlSubstring.configuration.rawValue] ?? 200
+      if httpStatusCode == 200 {
+        mockResponse = configDict[MockResponseType.validResponse.rawValue] as? String ?? ""
       } else {
-        for (urlSubstring, responseDict) in mockDataDict {
-          if url.absoluteString.contains(urlSubstring) {
-            resultConfigurationEndPoint = url.absoluteString
-            
-            if url.absoluteString.contains(UrlSubstring.refreshToken.rawValue) {
-              refreshTokenServiceCalled = true
-            }
-            
-            let httpStatusCode = serviceErrorDictionary[urlSubstring] ?? 200
-            if httpStatusCode == 200 {
-              mockResponse = responseDict[mockResponseType.rawValue] as? String ?? ""
-              if let data = mockResponse.data(using: .utf8) {
-                do {
-                  // if the response contains nonce, we need to update it with the nonce generated
-                  // during login. Otherwise, the validResponse will fail because of nonce mismatch.
-                  // we can't mock nonce since nonce is generated during login for security validation.
-                  if var jsonDict = try JSONSerialization.jsonObject(with: data) as? [String:Any],
-                   jsonDict["nonce"] != nil {
-                    jsonDict["nonce"] = nonce
-                    if let responseData = try? JSONSerialization.data(withJSONObject: jsonDict, options: []) {
-                      mockResponse = String(data:responseData, encoding:.utf8) ?? ""
-                    }
-                  }
-                } catch {
-                  // do nothing, unit test will eventually failed because of bad test data.
+        mockResponse = configDict[MockResponseType.errorResponse.rawValue] as? String ?? ""
+      }
+    }
+
+    completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
+  } else if let customProtocolDict = mockDataDict[UrlSubstring.customProtocol.rawValue],
+            url.absoluteString.contains(customProtocolDict["customProtocol_endpoint"] as? String ?? "") {
+    httpStatusCode = serviceErrorDictionary[UrlSubstring.customProtocol.rawValue] ?? 200
+    if httpStatusCode == 200 {
+      mockResponse = customProtocolDict[MockResponseType.validResponse.rawValue] as? String ?? ""
+    } else {
+      mockResponse = customProtocolDict[MockResponseType.errorResponse.rawValue] as? String ?? ""
+    }
+    
+    completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
+  } else {
+    for (urlSubstring, responseDict) in mockDataDict {
+      if url.absoluteString.contains(urlSubstring) {
+        resultConfigurationEndPoint = url.absoluteString
+        
+        if url.absoluteString.contains(UrlSubstring.refreshToken.rawValue) {
+          refreshTokenServiceCalled = true
+        }
+        
+        let httpStatusCode = serviceErrorDictionary[urlSubstring] ?? 200
+        if httpStatusCode == 200 {
+          mockResponse = responseDict[mockResponseType.rawValue] as? String ?? ""
+          if let data = mockResponse.data(using: .utf8) {
+            do {
+              // if the response contains nonce, we need to update it with the nonce generated
+              // during login. Otherwise, the validResponse will fail because of nonce mismatch.
+              // we can't mock nonce since nonce is generated during login for security validation.
+              if var jsonDict = try JSONSerialization.jsonObject(with: data) as? [String:Any],
+               jsonDict["nonce"] != nil {
+                jsonDict["nonce"] = nonce
+                if let responseData = try? JSONSerialization.data(withJSONObject: jsonDict, options: []) {
+                  mockResponse = String(data:responseData, encoding:.utf8) ?? ""
                 }
               }
-              completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
-              break
-            } else {
-              let httpStatusCode = serviceErrorDictionary[urlSubstring] ?? 400
-              let mockResponse = responseDict[MockResponseType.errorResponse.rawValue] as? String ?? ""
-              completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
-              break
+            } catch {
+              // do nothing, unit test will eventually failed because of bad test data.
             }
           }
+          completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
+          break
+        } else {
+          let httpStatusCode = serviceErrorDictionary[urlSubstring] ?? 400
+          let mockResponse = responseDict[MockResponseType.errorResponse.rawValue] as? String ?? ""
+          completionHandler(mockResponse.data(using: .utf8), HTTPURLResponse(url: url, statusCode: httpStatusCode, httpVersion: nil, headerFields: nil), nil)
+          break
         }
       }
+    }
     }
     
     return self.dataTaskMock

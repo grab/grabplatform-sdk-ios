@@ -60,9 +60,39 @@ class GrabIdPartnerSDKTests: XCTestCase {
         }
       }
     }
+    
     waitForExpectations(timeout: 2, handler: nil)
   }
 
+  func testCreateLoginSession() {
+    let mockUrlSession = MockURLSession(data:nil, response:nil, error:nil)
+    let grabIdPartner = GrabIdPartner(urlSession: mockUrlSession, bundle: Bundle(for: GrabIdPartnerSDKTests.self))
+    
+    var (loginSession, error) = grabIdPartner.createLoginSession(clientId: "", redirectUrl: "testRedirectUrl", scope: "testScope", serviceDiscoveryUrl: "testDiscoveryUrl")
+    XCTAssertNil(loginSession)
+    XCTAssertEqual(error?.code, GrabIdPartnerErrorCode.invalidClientId)
+
+    (loginSession, error) = grabIdPartner.createLoginSession(clientId: nil, redirectUrl: "", scope: "testScope", serviceDiscoveryUrl: "testDiscoveryUrl")
+    XCTAssertNil(loginSession)
+    XCTAssertEqual(error?.code, GrabIdPartnerErrorCode.invalidClientId)
+
+    (loginSession, error) = grabIdPartner.createLoginSession(clientId: "testClientId", redirectUrl: "", scope: "testScope", serviceDiscoveryUrl: "testDiscoveryUrl")
+    XCTAssertNil(loginSession)
+    XCTAssertEqual(error?.code, GrabIdPartnerErrorCode.invalidRedirectUrl)
+
+    (loginSession, error) = grabIdPartner.createLoginSession(clientId: "testClientId", redirectUrl: nil, scope: "testScope", serviceDiscoveryUrl: "testDiscoveryUrl")
+    XCTAssertNil(loginSession)
+    XCTAssertEqual(error?.code, GrabIdPartnerErrorCode.invalidRedirectUrl)
+
+    (loginSession, error) = grabIdPartner.createLoginSession(clientId: "testClientId", redirectUrl: "testRedirectUrl", scope: "", serviceDiscoveryUrl: "testDiscoveryUrl")
+    XCTAssertNil(loginSession)
+    XCTAssertEqual(error?.code, GrabIdPartnerErrorCode.invalidScope)
+    
+    (loginSession, error) = grabIdPartner.createLoginSession(clientId: "testClientId", redirectUrl: "testRedirectUrl", scope: nil, serviceDiscoveryUrl: "testDiscoveryUrl")
+    XCTAssertNil(loginSession)
+    XCTAssertEqual(error?.code, GrabIdPartnerErrorCode.invalidScope)
+  }
+  
   func testLogin() {
     // given
     let mockUrlSession = MockURLSession(data:nil, response:nil, error:nil)
@@ -74,7 +104,8 @@ class GrabIdPartnerSDKTests: XCTestCase {
     }
 
     let loginSession = LoginSession(clientId: "TestClientId", redirectUrl: testUrl, scope: "test_scope1 test_scope2 test_scope3",
-                                    serviceDiscoveryUrl: "http://testdiscoveryendpoint.com/testservicediscovery", hint: "test hint")
+                                    serviceDiscoveryUrl: "http://testdiscoveryendpoint.com/testservicediscovery",
+                                    hint: "test hint", idTokenHint: "test idtokenhint", prompt: "test prompt")
 
     // result
     XCTAssert(loginSession.clientId == "TestClientId")
@@ -83,6 +114,8 @@ class GrabIdPartnerSDKTests: XCTestCase {
     XCTAssert(loginSession.acrValues == nil)
     XCTAssert(loginSession.request == nil)
     XCTAssert(loginSession.hint == "test hint")
+    XCTAssert(loginSession.idTokenHint == "test idtokenhint")
+    XCTAssert(loginSession.prompt == "test prompt")
 
     // given
     

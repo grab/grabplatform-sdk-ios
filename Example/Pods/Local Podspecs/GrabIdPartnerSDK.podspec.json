@@ -1,10 +1,10 @@
 {
   "name": "GrabIdPartnerSDK",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "summary": "GrabIdPartner SDK for OAuth2.0 support.",
   "description": "The GrabIdPartner SDK allows users to sign in with their Grab account from third-party apps.",
   "homepage": "https://github.com/grab/grabplatform-sdk-ios",
-  "swift_version": "4.0",
+  "swift_versions": "4.0",
   "license": {
     "type": "Copyright",
     "text": "Copyright (c) 2018 GrabTaxi Pte Ltd.",
@@ -15,10 +15,11 @@
   },
   "source": {
     "git": "https://github.com/grab/grabplatform-sdk-ios.git",
-    "tag": "1.0.0"
+    "tag": "1.0.2"
   },
   "platforms": {
     "ios": "9.0"
   },
-  "source_files": "GrabIdPartnerSDK/Classes/**/*"
+  "source_files": "GrabIdPartnerSDK/Classes/**/*",
+  "swift_version": "4.0"
 }
