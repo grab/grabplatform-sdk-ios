@@ -808,11 +808,18 @@ class GrabIdPartnerSdkLock {}
     }
   }
   
-  private func getLoginUrls(loginSession: LoginSession, queryParams: [URLQueryItem], completion: @escaping(URL?,URL?,GrabIdPartnerError?) -> Void) {
+  private func getLoginUrls(loginSession: LoginSession,
+                            queryParams: [URLQueryItem],
+                            completion: @escaping(URL?,URL?,GrabIdPartnerError?) -> Void) {
     guard let authEndpoint = loginSession.authorizationEndpoint, let authUrl = GrabApi.createUrl(baseUrl: authEndpoint, params: queryParams) else {
       let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidResponse.rawValue,
                                      domain: .authorization, serviceError: nil)
       completion(nil, nil, error)
+      return
+    }
+
+    guard queryParams.contains(where: { $0.name == "login_hint" || $0.name == "id_token_hint" || $0.name == "prompt" }) else {
+      completion(authUrl, nil, nil)
       return
     }
     
