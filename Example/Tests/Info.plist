@@ -39,8 +39,6 @@
 		</dict>
 		<key>Request</key>
 		<string>test request</string>
-		<key>Hint</key>
-		<string>test hint</string>
 	</dict>
 	<key>MockJSONResponses</key>
 	<dict>
