@@ -22,6 +22,8 @@
 	<string>1</string>
 	<key>GrabIdPartnerSDK</key>
 	<dict>
+		<key>Hint</key>
+		<string>test hint</string>
 		<key>ClientId</key>
 		<string>TestClientId</string>
 		<key>RedirectUrl</key>

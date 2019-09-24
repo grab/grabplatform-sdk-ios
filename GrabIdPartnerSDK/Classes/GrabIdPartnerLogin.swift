@@ -229,7 +229,15 @@ class GrabIdPartnerSdkLock {}
        let appUrl = URL(string: appRedirectUrl),
        let serviceDiscoveryUrl = serviceDiscoveryUrl {
       var loginSession: LoginSession? = nil
-      loginSession = LoginSession(clientId: appClientId, redirectUrl: appUrl, scope: appScope, request: request, acrValues: acrValues, serviceDiscoveryUrl: serviceDiscoveryUrl, hint: hint, idTokenHint: idTokenHint)
+      loginSession = LoginSession(clientId: appClientId,
+                                  redirectUrl: appUrl,
+                                  scope: appScope,
+                                  request: request,
+                                  acrValues: acrValues,
+                                  serviceDiscoveryUrl: serviceDiscoveryUrl,
+                                  hint: hint,
+                                  idTokenHint: idTokenHint,
+                                  prompt: prompt)
       return (loginSession, nil)
     } else {
       var error : GrabIdPartnerError? = nil
@@ -818,7 +826,7 @@ class GrabIdPartnerSdkLock {}
       return
     }
 
-    guard queryParams.contains(where: { $0.name == "login_hint" || $0.name == "id_token_hint" || $0.name == "prompt" }) else {
+    guard !queryParams.contains(where: { $0.name == "login_hint" || $0.name == "id_token_hint" || $0.name == "prompt" }) else {
       completion(authUrl, nil, nil)
       return
     }
