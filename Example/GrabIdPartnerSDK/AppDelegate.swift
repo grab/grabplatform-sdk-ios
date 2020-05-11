@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
     
     let source = options[.sourceApplication]
-    print("deeplink received from \(String(describing: source))")
+    debugPrint("deeplink \(url.absoluteString) received from app \(String(describing: source))")
     
     guard let webLoginViewController:ViewController = UIApplication.shared.keyWindow?.rootViewController as? ViewController else {
       assertionFailure("No ViewController detected")

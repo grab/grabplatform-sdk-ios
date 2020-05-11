@@ -20,6 +20,13 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>grabconnect</string>
+		<string>grabdriver</string>
+		<string>grab</string>
+		<string>itms-apps</string>
+	</array>
 	<key>GrabIdPartnerSDK</key>
 	<dict>
 		<key>Hint</key>
@@ -73,13 +80,10 @@
 			<key>customProtocol_endpoint</key>
 			<string>https://gradidpartnertest.com/clientPublicInfo/TestClientId/public</string>
 			<key>ValidResponse</key>
-			<string>{&quot;product_name&quot;:&quot;OAuth2TestOrg&quot;,&quot;logo_url&quot;:&quot;https://sg.bmscdn.com/webin/mailer/bmslogo.png&quot;,&quot;home_page_url&quot;:&quot;http://www.contosoco.com/&quot;,&quot;privacy_policy_url&quot;:&quot;https://privacy.microsoft.com/en-us/privacystatement&quot;,&quot;terms_of_service_url&quot;:&quot;https://privacy.microsoft.com/en-us/terms_of_service_url&quot;,&quot;custom_protocols&quot;:[&quot;{\&quot;protocol_adr\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;minversion_adr\&quot;: \&quot;5.58.0\&quot;,\&quot;package_adr\&quot;: \&quot;com.grabtaxi.passenger\&quot;,\&quot;protocol_ios\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;protocol_pax_ios\&quot;\&quot;:\&quot;}&quot;]}</string>
+			<string>{&quot;product_name&quot;:&quot;OAuth2TestOrg&quot;,&quot;logo_url&quot;:&quot;https://sg.bmscdn.com/webin/mailer/bmslogo.png&quot;,&quot;home_page_url&quot;:&quot;http://www.contosoco.com/&quot;,&quot;privacy_policy_url&quot;:&quot;https://privacy.microsoft.com/en-us/privacystatement&quot;,&quot;terms_of_service_url&quot;:&quot;https://privacy.microsoft.com/en-us/terms_of_service_url&quot;,&quot;custom_protocols&quot;:[&quot;{\&quot;protocol_adr\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;minversion_adr\&quot;: \&quot;5.58.0\&quot;,\&quot;package_adr\&quot;: \&quot;com.grabtaxi.passenger\&quot;,\&quot;protocol_ios\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;protocol_pax_ios\&quot;:\&quot;testconnect:\&quot;}&quot;]}</string>
+			<key>ValidResponseWithAppLink</key>
+			<string>{&quot;product_name&quot;:&quot;OAuth2TestOrg&quot;,&quot;logo_url&quot;:&quot;https://sg.bmscdn.com/webin/mailer/bmslogo.png&quot;,&quot;home_page_url&quot;:&quot;http://www.contosoco.com/&quot;,&quot;privacy_policy_url&quot;:&quot;https://privacy.microsoft.com/en-us/privacystatement&quot;,&quot;terms_of_service_url&quot;:&quot;https://privacy.microsoft.com/en-us/terms_of_service_url&quot;,&quot;custom_protocols&quot;:[&quot;{\&quot;protocol_adr\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;minversion_adr\&quot;: \&quot;5.58.0\&quot;,\&quot;package_adr\&quot;: \&quot;com.grabtaxi.passenger\&quot;,\&quot;protocol_ios\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;protocol_pax_ios\&quot;:\&quot;testconnect:\&quot;}&quot;,&quot;{\&quot;appstore_link_adr\&quot;: \&quot;https://play.google.com/store/apps/details?id=com.grabtaxi.passenger\&quot;,\&quot;appstore_link_ios\&quot;: \&quot;itms-apps://itunes.apple.com/app/id647268330\&quot;}&quot;]}</string>
 		</dict>
 	</dict>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>grab</string>
-		<string>grabconnect</string>
-	</array>
 </dict>
 </plist>

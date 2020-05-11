@@ -9,6 +9,15 @@ and terms of service.
 [![License](https://img.shields.io/cocoapods/l/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 [![Platform](https://img.shields.io/cocoapods/p/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 
+## Release Notes - 1.0.3
+The login API supports "Single Sign-On." Partner application can configure with Grab Id to take advantage of the login state of the Grab applications
+(i.e. PAX, etc.) for authorization. The client_public_info_endpoint contained in response of the discovery URL will provide the configuration of the URL 
+scheme of the application that can be used to authenticate the user on behalf of partner application.  If the user already login to the application 
+(i.e. Grab PAX application, etc.), the user will only need to provide consent instead of going through the cumbersome authentication process. The login 
+API will proxy the authorization request to the application (e.g. Grab PAX application) instead of using default Grab web login flow to authorize the user. 
+Partner can also configure with Grab Id to launch into the  app store instead when it is not desirable to default authorization to web login. In this case, 
+partner must handle error to retry or cancel the authorization request. 
+   
 ## Release Notes - 1.0.2
 
 - Partner SDK will login with PAX or DAX app instead of using webview if PAX/DAX is installed
@@ -23,6 +32,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 - Xcode 9.0+
 - Swift 3.2 / 4.1+
 - Objective-C
+
+## Analytics
+
+GrabID Partner SDK does not send any analytic data due to user privacy. Third-party is responsible for their own analytics to troubleshoot error and
+analytics data to address their analytics requirements.
 
 ## Installation the GrabID Partner SDK
 
@@ -526,6 +540,8 @@ invalidResponse
 invalidServiceDiscoveryUrl
 invalidAppBundle
 invalidCustomProtocolUrl
+failedTolaunchAppStoreLink     // Failed to launch the configured app store link
+launchAppStoreLink             // Launch the configured app store link
 
   
 partnerAppError = 10000        Application defined errors are 10000 and above
