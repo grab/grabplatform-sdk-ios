@@ -181,6 +181,52 @@ class GrabIdPartnerSDKTests: XCTestCase {
     waitForExpectations(timeout: 1, handler: nil)
   }
   
+  func testLoginAndLogoutWithAppLink() {
+    // given
+    let mockUrlSession = MockURLSession(data:nil, response:nil, error:nil)
+    let grabIdPartner = GrabIdPartner(urlSession: mockUrlSession, bundle: Bundle(for: GrabIdPartnerSDKTests.self))
+    let url = URL(string: "grabtest://testopen")
+    guard let testUrl = url else {
+      XCTAssert(false, "invalid url")
+      return
+    }
+    
+    mockUrlSession.testWithAppLink = true
+    
+    let loginSession = LoginSession(clientId: "TestClientId", redirectUrl: testUrl, scope: "test_scope1 test_scope2 test_scope3", serviceDiscoveryUrl: "http://testdiscoveryendpoint.com/testservicediscovery")
+    
+    // result
+    XCTAssert(loginSession.clientId == "TestClientId")
+    XCTAssert(loginSession.redirectUrl.absoluteString == "grabtest://testopen")
+    XCTAssert(loginSession.scope == "test_scope1 test_scope2 test_scope3")
+    XCTAssert(loginSession.acrValues == nil)
+    XCTAssert(loginSession.request == nil)
+    
+    // given
+    
+    var presentingController = MockLoginUIViewController()
+    let expectation = self.expectation(description: "testLoginWithCaching")
+
+    // clean up any previous login session
+    grabIdPartner.logout(loginSession: loginSession) { _ in
+      grabIdPartner.login(loginSession: loginSession, presentingViewController:presentingController) { (error) in
+    
+        grabIdPartner.logout(loginSession: loginSession)
+        presentingController = MockLoginUIViewController()
+        
+        // when: subsequence login will use cache and won't trigger web login flow
+        grabIdPartner.login(loginSession: loginSession, presentingViewController:presentingController) { (error) in
+          
+          // then: loaded from cache
+          XCTAssertNotNil(error)
+          XCTAssertEqual(error?.code ?? GrabIdPartnerErrorCode.authorizationFailed, GrabIdPartnerErrorCode.failedTolaunchAppStoreLink)
+          expectation.fulfill()
+        }
+      }
+    }
+    waitForExpectations(timeout: 1, handler: nil)
+  }
+
   func testExchangeToken() {
     // given
     let mockUrlSession = MockURLSession(data:nil, response:nil, error:nil)
@@ -917,5 +963,41 @@ class GrabIdPartnerSDKTests: XCTestCase {
     
     // wait
     waitForExpectations(timeout: 1, handler: nil)
+  }
+  
+  func testPartnerSDKErrorDomains() {
+    GrabIdPartnerErrorDomain.allCases.forEach { domain in
+      let error = GrabIdPartnerError(code: GrabIdPartnerErrorCode.invalidUrl , domain: domain)
+      XCTAssertEqual(error.domain, domain)
+    }
+  }
+
+  func testPartnerSDKErrorCodes() {
+    GrabIdPartnerErrorCode.allCases.forEach { code in
+      let error = GrabIdPartnerError(code: code, domain: GrabIdPartnerErrorDomain.authorization)
+      XCTAssertEqual(error.code, code)
+    }
+  }
+
+  func testPartnerSDKLocalizationErrors() {
+    GrabIdPartnerLocalization.allCases.forEach { localizationError in
+      let error = GrabIdPartnerError(code: GrabIdPartnerErrorCode.authorizationFailed,
+                                     localizeMessage: localizationError.rawValue, domain: GrabIdPartnerErrorDomain.authorization)
+      XCTAssertEqual(error.localizeMessage, localizationError.rawValue)
+    }
+  }
+
+  func testPartnerSDKInitLocalizationErrors() {
+    GrabIdPartnerLocalization.allCases.forEach { localizationError in
+      let locError = GrabIdPartnerLocalization(rawValue: localizationError.rawValue)
+      let error = GrabIdPartnerError(code: GrabIdPartnerErrorCode.authorizationFailed,
+                                     localizeMessage: locError?.rawValue ?? "", domain: GrabIdPartnerErrorDomain.authorization)
+      XCTAssertEqual(error.localizeMessage, locError?.rawValue)
+    }
+
+    let unknownError = GrabIdPartnerLocalization(rawValue: "test unknown error")
+    let error = GrabIdPartnerError(code: GrabIdPartnerErrorCode.authorizationFailed,
+                                   localizeMessage: unknownError?.rawValue ?? "", domain: GrabIdPartnerErrorDomain.authorization)
+    XCTAssertEqual(error.localizeMessage, unknownError?.rawValue)
   }
 }

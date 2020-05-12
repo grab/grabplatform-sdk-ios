@@ -7,7 +7,7 @@
  */
 
 import Foundation
-@objc public enum GrabIdPartnerErrorDomain: Int {
+@objc public enum GrabIdPartnerErrorDomain: Int, CaseIterable {
   case serviceDiscovery
   case loadConfiguration
   case authorization
@@ -16,9 +16,10 @@ import Foundation
   case logout
   case protectedResource
   case customProtocolsService
+  case appStore
 }
 
-@objc public enum GrabIdPartnerErrorCode : Int {
+@objc public enum GrabIdPartnerErrorCode : Int, CaseIterable {
   case grabIdServiceFailed
   case discoveryServiceFailed
   case idTokenInfoServiceFailed
@@ -46,6 +47,8 @@ import Foundation
   case invalidServiceDiscoveryUrl     // Invalid service discovery url
   case invalidAppBundle               // Missing bundle
   case invalidCustomProtocolUrl       // Invalid custom protocol url to get the Grab app deeplinks.
+  case failedTolaunchAppStoreLink     // Failed to launch the configured app store link
+  case launchAppStoreLink             // Launch the configured app store link
   
   case partnerAppError = 10000               // app defined errors are 10000 and above
   // more to come ...
@@ -67,7 +70,7 @@ import Foundation
   }
 }
 
-@objc public enum GrabIdPartnerLocalization: Int, RawRepresentable {
+@objc public enum GrabIdPartnerLocalization: Int, RawRepresentable, CaseIterable {
   case invalidUrl
   case securityValidationFailed
   case authorizationInitializationFailure

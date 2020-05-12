@@ -38,6 +38,7 @@
 		<string>grabconnect</string>
 		<string>grab</string>
 		<string>grabdriver</string>
+		<string>itms-apps</string>
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string></string>

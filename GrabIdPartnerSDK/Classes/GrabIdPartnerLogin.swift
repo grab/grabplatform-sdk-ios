@@ -275,70 +275,95 @@ class GrabIdPartnerSdkLock {}
       loginSession.accessTokenExpiresAt ?? now > now {
       completion(nil)
     } else {
-      getAuthenticateURL(loginSession: loginSession) { authUrl, loginWithGrabUrl, error in
-        DispatchQueue.main.async { [weak self] in
+      getAuthenticateURL(loginSession: loginSession) { authUrl, loginWithGrabUrl, appStoreLinkUrl, error in
+        DispatchQueue.main.async {
           if let error = error  {
             completion(error)
             return
           }
-          
-          if #available(iOS 10.0, *),
-             let loginWithGraburl = loginWithGrabUrl {
-            UIApplication.shared.open(loginWithGraburl, options: [:], completionHandler: { (success) in
-              if !success {
-                self?.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
-              }
-            })
+
+          if #available(iOS 10.0, *) {
+            if let loginWithGraburl = loginWithGrabUrl {
+              UIApplication.shared.open(loginWithGraburl, options: [:], completionHandler: { [weak self] success in
+                guard let strongSelf = self else {
+                  DispatchQueue.main.async {
+                    completion(GrabIdPartnerError(code: GrabIdPartnerErrorCode.invalidUrl, domain: GrabIdPartnerErrorDomain.authorization))
+                  }
+                  return
+                }
+                DispatchQueue.main.async {
+                  if !success {
+                    if let appStoreLinkUrl = appStoreLinkUrl {
+                      let error = strongSelf.sendToAppStore(appStoreLinkUrl: appStoreLinkUrl)
+                      completion(error)
+                    } else {
+                      strongSelf.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
+                    }
+                  } else {
+                    completion(nil)
+                  }
+                }
+              })
+            } else if let appStoreLinkUrl = appStoreLinkUrl {
+              let error = self.sendToAppStore(appStoreLinkUrl: appStoreLinkUrl)
+              completion(error)
+            } else {
+              self.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
+            }
           } else {
-            self?.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
+            self.webLogin(url: authUrl, loginSession: loginSession, presentingViewController: presentingViewController, completion: completion)
           }
-        }
       }
     }
   }
-
-  private func getLoginWithGrabDeepLink(loginWithGrabDict: [[String:String]]) -> String? {
-    guard loginWithGrabDict.count > 0 else {
-      return nil
     }
     
-    if let preferredLoginWithGrabInfo = loginWithGrabDict.first {
-      return preferredLoginWithGrabInfo["protocol_ios"]
+  // if there is an app store link, we will launch into the app store.
+  private func sendToAppStore(appStoreLinkUrl: URL) -> GrabIdPartnerError {
+    guard #available(iOS 10.0, *), UIApplication.shared.canOpenURL(appStoreLinkUrl) else {
+      return GrabIdPartnerError(code: .failedTolaunchAppStoreLink,
+                                localizeMessage: appStoreLinkUrl.absoluteString,
+                                domain: .appStore,
+                                serviceError: nil)
     }
-    return nil
+
+    UIApplication.shared.open(appStoreLinkUrl)
+
+    return GrabIdPartnerError(code: .launchAppStoreLink,
+                              localizeMessage: appStoreLinkUrl.absoluteString,
+                              domain: .appStore,
+                              serviceError: nil)
   }
 
-  private func getLoginWithGrabURLScheme(loginWithGrabDict: [[String:String]]) -> String? {
+  private func getLoginWithGrabDeepLink(loginWithGrabDict: [[String:String]]) -> (String?,String?) {
     guard loginWithGrabDict.count > 0 else {
-      return nil
+      return (nil, nil)
     }
     
-    if let preferredLoginWithGrabInfo = loginWithGrabDict.first {
-      return preferredLoginWithGrabInfo["protocol_pax_ios"]
+    var loginWithGrab: String? = nil
+    var appStoreLink: String? = nil
+    for dictItem in loginWithGrabDict {
+      // first get the protocol_pax_ios which contains the scheme to check if any app is registered
+      // to handle this url scheme (this is for verison validation to avoid launching into a dead link
+      if loginWithGrab == nil, let loginUrlScheme = dictItem["protocol_pax_ios"], schemeAvailable(urlScheme: loginUrlScheme) {
+        // found an app that can handle the login deeplink
+        loginWithGrab = dictItem ["protocol_ios"]
+      } else if appStoreLink?.isEmpty ?? true, let item = dictItem["appstore_link_ios"] {
+        appStoreLink = item
+      }
+      if loginWithGrab != nil, appStoreLink != nil {
+        // found the links we are looking for
+        break
+      }
     }
-    return nil
-  }
   
+    return (loginWithGrab, appStoreLink)
+  }
+
   private func schemeAvailable(urlScheme: String) -> Bool {
     if let url = URL(string: urlScheme) {
       return UIApplication.shared.canOpenURL(url)
     }
-    return false
-  }
-  
-  private func launchDeeplink(deeplinkUrl: String) {
-    if #available(iOS 10.0, *) {
-      if let url = URL(string: deeplinkUrl) {
-        UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
-          debugPrint("Open \(deeplinkUrl): \(success)")
-        })
-      }
-    } else {
-      debugPrint("GrabIdPartnerSDK: launchDeeplink failed, minimum iOS version is 10.0.")
-    }
-  }
-  
-  private func loginWithGrabApp(loginUrl: URL) -> Bool {
     return false
   }
   
@@ -605,12 +630,13 @@ class GrabIdPartnerSdkLock {}
       return false
     }
     
+    loginSession.safariView = nil
+
     safariView.dismiss(animated: true) {
       if let dismissHandler = completion {
         DispatchQueue.main.async {
           dismissHandler()
         }
-        loginSession.safariView = nil
       }
     }
     
@@ -818,48 +844,54 @@ class GrabIdPartnerSdkLock {}
   
   private func getLoginUrls(loginSession: LoginSession,
                             queryParams: [URLQueryItem],
-                            completion: @escaping(URL?,URL?,GrabIdPartnerError?) -> Void) {
+                            completion: @escaping(URL?,URL?,URL?,GrabIdPartnerError?) -> Void) {
     guard let authEndpoint = loginSession.authorizationEndpoint, let authUrl = GrabApi.createUrl(baseUrl: authEndpoint, params: queryParams) else {
       let error = GrabIdPartnerError(code: .invalidUrl, localizeMessage:loginSession.authorizationEndpoint ?? GrabIdPartnerLocalization.invalidResponse.rawValue,
                                      domain: .authorization, serviceError: nil)
-      completion(nil, nil, error)
+      completion(nil, nil, nil, error)
       return
     }
 
     guard !queryParams.contains(where: { $0.name == "login_hint" || $0.name == "id_token_hint" || $0.name == "prompt" }) else {
-      completion(authUrl, nil, nil)
+      completion(authUrl, nil, nil, nil)
       return
     }
     
     // get the login with grab deeplink (if any),
-    var loginWithGrabAppUrl: URL? = nil
+    var loginWithAppUrl: URL? = nil
+    
+    // app store link
+    var appStoreLinkUrl: URL? = nil
     
     getLoginWithGrabDeeplinkDictionary(clientId: loginSession.clientId, clientPublicInfoUri: loginSession.clientPublicInfoEndpoint) { [weak self] loginWithGrabDict, error in
-      if error == nil, let loginDeeplink = self?.getLoginWithGrabDeepLink(loginWithGrabDict: loginWithGrabDict) {
-        var params = queryParams
-        params.append(URLQueryItem(name: "auth_endpoint", value: authEndpoint))
-        loginWithGrabAppUrl = GrabApi.createUrl(baseUrl: loginDeeplink, params: params)
-      }
-      
       DispatchQueue.main.async {
-        let validateURLScheme = self?.getLoginWithGrabURLScheme(loginWithGrabDict: loginWithGrabDict) ?? ""
-        if let deeplinkUrl = loginWithGrabAppUrl,
-          !(self?.schemeAvailable(urlScheme: validateURLScheme.isEmpty ? deeplinkUrl.absoluteString : validateURLScheme) ?? false) {
-          loginWithGrabAppUrl = nil
+        if error == nil {
+          let (loginDeeplink, appStoreLink) = self?.getLoginWithGrabDeepLink(loginWithGrabDict: loginWithGrabDict) ?? (nil, nil)
+          
+          if let loginDeeplink = loginDeeplink {
+            var params = queryParams
+            params.append(URLQueryItem(name: "auth_endpoint", value: authEndpoint))
+            loginWithAppUrl = GrabApi.createUrl(baseUrl: loginDeeplink, params: params)
+          }
+          
+          if let appStoreLink = appStoreLink {
+            appStoreLinkUrl = URL(string: appStoreLink)
+          }
         }
-        completion(authUrl, loginWithGrabAppUrl, nil)
+        
+        completion(authUrl, loginWithAppUrl, appStoreLinkUrl, nil)
       }
     }
   }
   
-  private func getAuthenticateURL(loginSession: LoginSession, completion: @escaping(URL?,URL?,GrabIdPartnerError?) -> Void) {
+  private func getAuthenticateURL(loginSession: LoginSession, completion: @escaping(URL?,URL?,URL?,GrabIdPartnerError?) -> Void) {
     let (nonce, state, codeVerifier, codeChallenge) = getSecurityValues()
     guard nonce != nil,
           state != nil,
           codeVerifier != nil,
           codeChallenge != nil else {
       let error = GrabIdPartnerError(code: .authorizationInitializationFailure, localizeMessage:GrabIdPartnerLocalization.authorizationInitializationFailure.rawValue, domain: .authorization, serviceError: nil)
-            completion(nil, nil, error)
+            completion(nil, nil, nil, error)
       return
     }
     
@@ -908,7 +940,7 @@ class GrabIdPartnerSdkLock {}
     } else {
       GrabApi.fetchServiceConfigurations(session: urlSession ?? .shared, serviceDiscoveryUrl:loginSession.serviceDiscoveryUrl) { [weak self](endPoints, error) in
         guard error == nil, let strongSelf = self else {
-          completion(nil, nil, error)
+          completion(nil, nil, nil, error)
           return
         }
 

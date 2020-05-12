@@ -148,8 +148,6 @@ class GrabApi {
       if let url = components.url {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        // urlRequest.timeoutInterval = ???
-//        let session = URLSession.shared
         let task = session.dataTask(with: urlRequest) { (data, response, error) in
           if let error = error {
             let error = GrabIdPartnerError(code: .serviceError,
@@ -239,8 +237,6 @@ class GrabApi {
         urlRequest.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "GET"
-        // urlRequest.timeoutInterval = ???
-//        let session = URLSession.shared
         let task = session.dataTask(with: urlRequest) { (data, response, error) in
           if let error = error {
             let error = GrabIdPartnerError(code: .idTokenInfoServiceFailed,
@@ -354,7 +350,7 @@ class GrabApi {
         
         do {
           var grabAppDeeplinkMappings: [[String:String]] = []
-          print("\(String(data:data, encoding: .utf8) ?? "")")
+          debugPrint("\(String(data:data, encoding: .utf8) ?? "")")
           if let json = try JSONSerialization.jsonObject(with: data) as? [String:Any],
             let customProtocols = json["custom_protocols"] as? [String] {
             let deeplinkProtocolInfos = customProtocols.compactMap { $0.data(using: String.Encoding.utf8) }

@@ -22,6 +22,7 @@ internal enum UrlSubstring : String {
 // Mock response to use in the plist
 public enum MockResponseType : String {
   case validResponse = "ValidResponse"
+  case validResponseWithAppLink = "ValidResponseWithAppLink"
   case expiredResponse = "ExpiredResponse"
   case errorResponse = "ErrorResponse"
 }
@@ -38,10 +39,12 @@ public enum MockResponseType : String {
   var refreshTokenServiceCalled = false
   var exchangeTokenServiceCalled = false
   
+  public var testWithAppLink = false
   public var nonce : String = ""
   public var mockResponseType = MockResponseType.validResponse
   
   private var serviceConfigurationEndPoint : String = ""
+  private var clientConfigurationEndPoint : String = ""
   private var customProtocolEndPoint : String = ""
   public var serviceErrorDictionary : [String:Int] = [:]
   
@@ -101,7 +104,11 @@ public enum MockResponseType : String {
             url.absoluteString.contains(customProtocolDict["customProtocol_endpoint"] as? String ?? "") {
     httpStatusCode = serviceErrorDictionary[UrlSubstring.customProtocol.rawValue] ?? 200
     if httpStatusCode == 200 {
-      mockResponse = customProtocolDict[MockResponseType.validResponse.rawValue] as? String ?? ""
+      if testWithAppLink {
+        mockResponse = customProtocolDict[MockResponseType.validResponseWithAppLink.rawValue] as? String ?? ""
+      } else {
+        mockResponse = customProtocolDict[MockResponseType.validResponse.rawValue] as? String ?? ""
+      }
     } else {
       mockResponse = customProtocolDict[MockResponseType.errorResponse.rawValue] as? String ?? ""
     }

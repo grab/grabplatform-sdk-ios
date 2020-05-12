@@ -14,19 +14,18 @@ class GrabApi {
     var exchangeUri = ""
     var loginUri = ""
     var verify = ""
+    var clientPublicInfoUri = ""   // end point to get the list of Grab App deeplink that can open handle login thru Grab
   }
 
-  static func createUrl(baseUrl: String, params: [NSURLQueryItem]? = nil) -> URL? {
-    let urlComponents = NSURLComponents(string: baseUrl)
-
+  static func getQueryParamString(queryParams: [URLQueryItem]?) -> String {
+    var percentEncodedQuery = ""
     var charSet = CharacterSet.urlQueryAllowed
     charSet.remove(":")
     charSet.remove("=")
-
-    if let params = params {
+    
+    if let queryParams = queryParams {
       var separator = ""
-      var percentEncodedQuery = ""
-      for param in params {
+      for param in queryParams {
         if let encodedName = param.name.addingPercentEncoding(withAllowedCharacters: charSet),
           let encodedValue = param.value?.addingPercentEncoding(withAllowedCharacters: charSet) {
           let queryParam = "\(separator)\(encodedName)=\(encodedValue)"
@@ -34,8 +33,22 @@ class GrabApi {
           separator = "&"
         }
       }
-      urlComponents?.percentEncodedQuery = percentEncodedQuery
     }
+    return percentEncodedQuery
+  }
+  
+  static func createUrl(baseUrl: String, params: [URLQueryItem]? = nil) -> URL? {
+    guard let params = params, params.count > 0 else {
+      return URL(string: baseUrl)
+    }
+    
+    let urlComponents = NSURLComponents(string: baseUrl)
+
+    let percentEncodedQuery = GrabApi.getQueryParamString(queryParams: urlComponents?.queryItems)
+    let morePercentEncodedQuery = GrabApi.getQueryParamString(queryParams: params)
+    let separator = percentEncodedQuery.isEmpty ? "" : "&"
+
+    urlComponents?.percentEncodedQuery = "\(percentEncodedQuery)\(separator)\(morePercentEncodedQuery)"
 
     return urlComponents?.url
   }
@@ -56,8 +69,7 @@ class GrabApi {
     urlRequest.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
     urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
     urlRequest.httpMethod = "GET"
-    // urlRequest.timeoutInterval = ???
-//    let session = URLSession.shared
+
     let task = session.dataTask(with: urlRequest) { (data, response, error) in
       if let error = error {
         let error = GrabIdPartnerError(code: .grabIdServiceFailed,
@@ -90,9 +102,11 @@ class GrabApi {
             let authorizationEndpoint = json["authorization_endpoint"],
             let tokenEndpoint = json["token_endpoint"],
             let idTokenVerificationEndPoint = json["id_token_verification_endpoint"] {
+            let clientPublicInfoUri = json["client_public_info_endpoint"] as? String
             endPoints.loginUri = authorizationEndpoint as? String ?? ""
             endPoints.exchangeUri = tokenEndpoint as? String ?? ""
             endPoints.verify = idTokenVerificationEndPoint as? String ?? ""
+            endPoints.clientPublicInfoUri = clientPublicInfoUri ?? "https://api.stg-myteksi.com/grabid/v1/oauth2/clients/{client_id}/public"
           }
           completion(endPoints, nil)
         } catch let parseError {
@@ -134,8 +148,6 @@ class GrabApi {
       if let url = components.url {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        // urlRequest.timeoutInterval = ???
-//        let session = URLSession.shared
         let task = session.dataTask(with: urlRequest) { (data, response, error) in
           if let error = error {
             let error = GrabIdPartnerError(code: .serviceError,
@@ -225,8 +237,6 @@ class GrabApi {
         urlRequest.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "GET"
-        // urlRequest.timeoutInterval = ???
-//        let session = URLSession.shared
         let task = session.dataTask(with: urlRequest) { (data, response, error) in
           if let error = error {
             let error = GrabIdPartnerError(code: .idTokenInfoServiceFailed,
@@ -293,5 +303,71 @@ class GrabApi {
         task.resume()
       }
     }
+  }
+  
+  // returns a directionary that provides the deeplinks for Grab Passenger App - "PASSENGER", Grab Driver App - "DRIVER"
+  static func fetchGrabAppDeeplinks(session: URLSession, customProtocolUrl: String, completion: @escaping([[String:String]],GrabIdPartnerError?) -> Void) {
+    guard let url = createUrl(baseUrl: customProtocolUrl) else {
+      let error = GrabIdPartnerError(code: .invalidUrl,
+                                     localizeMessage:GrabIdPartnerLocalization.invalidCustomProtocolUrl.rawValue,
+                                     domain: .customProtocolsService,
+                                     serviceError: nil)
+      completion([], error)
+      return
+    }
+    
+    var urlRequest = URLRequest(url: url)
+    urlRequest.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+    urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+    urlRequest.httpMethod = "GET"
+    
+    let task = session.dataTask(with: urlRequest) { (data, response, error) in
+      if let error = error {
+        let error = GrabIdPartnerError(code: .grabIdServiceFailed,
+                                       localizeMessage: GrabIdPartnerLocalization.invalidResponse.rawValue,
+                                       domain: .customProtocolsService,
+                                       serviceError: error)
+        completion([], error)
+      } else {
+        if let response = response as? HTTPURLResponse,
+          !(200...299 ~= response.statusCode) {
+          let error = GrabIdPartnerError(code: .discoveryServiceFailed,
+                                         localizeMessage:"\(response.statusCode)",
+            domain: .customProtocolsService,
+            serviceError: nil)
+          completion([], error)
+          return
+        }
+        
+        guard let data = data else {
+          let error = GrabIdPartnerError(code: .grabIdServiceFailed,
+                                         localizeMessage: GrabIdPartnerLocalization.invalidResponse.rawValue,
+                                         domain: .customProtocolsService,
+                                         serviceError: error)
+          completion([], error)
+          return
+        }
+        
+        do {
+          var grabAppDeeplinkMappings: [[String:String]] = []
+          debugPrint("\(String(data:data, encoding: .utf8) ?? "")")
+          if let json = try JSONSerialization.jsonObject(with: data) as? [String:Any],
+            let customProtocols = json["custom_protocols"] as? [String] {
+            let deeplinkProtocolInfos = customProtocols.compactMap { $0.data(using: String.Encoding.utf8) }
+            if deeplinkProtocolInfos.count > 0 {
+              grabAppDeeplinkMappings = try deeplinkProtocolInfos.compactMap { try JSONSerialization.jsonObject(with: $0) as? [String:String] ?? [:] }
+            }
+          }
+          completion(grabAppDeeplinkMappings, nil)
+        } catch let parseError {
+          let error = GrabIdPartnerError(code: .grabIdServiceFailed,
+                                         localizeMessage:parseError.localizedDescription,
+                                         domain: .customProtocolsService,
+                                         serviceError: parseError)
+          completion([], error)
+        }
+      }
+    }
+    task.resume()
   }
 }
