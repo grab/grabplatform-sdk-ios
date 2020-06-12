@@ -35,7 +35,7 @@
 	<string>1</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>grabconnect</string>
+		<string>grabconnect2</string>
 		<string>grab</string>
 		<string>grabdriver</string>
 		<string>itms-apps</string>
