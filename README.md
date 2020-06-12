@@ -9,6 +9,15 @@ and terms of service.
 [![License](https://img.shields.io/cocoapods/l/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 [![Platform](https://img.shields.io/cocoapods/p/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 
+## Release Notes - 1.0.4
+
+Login with PAX now supports non Grab domain for the authorization url. PAX has updated the scheme to grabconnect2. Partner wants to use
+custom authorization domain (non default Grab domain) must:
+1. Register with Grab ID team to use grabconnect2 URL scheme to deeplink to PAX.
+2. The custom domain must be whitelist by the Grab ID mobile team. 
+3. Add grabconnect2 to their application's info.plist (SDK example has been updated to grabconnect2). Please verify the grabconnect2 scheme  matches 
+your registration with the Grab ID team.
+
 ## Release Notes - 1.0.3
 The login API supports "Single Sign-On." Partner application can configure with Grab Id to take advantage of the login state of the Grab applications
 (i.e. PAX, etc.) for authorization. The client_public_info_endpoint contained in response of the discovery URL will provide the configuration of the URL 
@@ -412,15 +421,15 @@ Grab Id partner app has the option to configure their application to sign in thr
 <key>LSApplicationQueriesSchemes</key>
 <array>
 <string>grab</string>
-<string>grabconnect</string>
+<string>grabconnect2</string>
 </array>
 ```
 to the application info.plist to let the Grab ID Partner SDK to query for Grab Passenger Application that can handle Login in with Grab Application feature.
 
 There are several conditions that must be met before the Grab ID SDK uses for the Login with Grab Passenger Application. Otherwise, it will revert back to the existing web login flow:
 1. Partner app loginSession or login call cannot contain hint, id_token_hint, or prompt. Partner providing any of this parameter either has the ability to take advantage of the login token (i.e. providing hint or id_token_hint or explicitly wants to control the login flow (i.e. prompt user for additional information).
-2. By default, all new Partner apps will opt-in to use the Login with Grab Passenger Application feature. If the Partner app failed to add the grabconnect scheme to LSApplicationQueriesSchemes in info.plist. Grab ID SDK will not be able to determine if the Grab Passenger app has implemented Login with Grab Passenger app feature and will have to revert to the web login flow.
-3. Existing partner app that uses the Grab ID SDK will need to update the SDK and add the grabconnect scheme to LSApplicationQueriesSchemes in info.plist to take advantage of this feature.
+2. By default, all new Partner apps will opt-in to use the Login with Grab Passenger Application feature. If the Partner app failed to add the grabconnect2 scheme to LSApplicationQueriesSchemes in info.plist. Grab ID SDK will not be able to determine if the Grab Passenger app has implemented Login with Grab Passenger app feature and will have to revert to the web login flow.
+3. Existing partner app that uses the Grab ID SDK will need to update the SDK and add the grabconnect2 scheme to LSApplicationQueriesSchemes in info.plist to take advantage of this feature.
 4. Grab Passenger App is updated to contain the Login with Grab Passenger app feature.
 
 If Grab Id SDK cannot use the Login with Grab Passenger App feature (see conditions above), then the login API will present the SFSafariViewController and navigate to the Grab Id authorize URL for in-app web authorization. Once the user finished logging in. Grab Id authorize service will redirect back to the app with the redirect url that includes the authorization code, state, and error (if any). Application must handle the URL redirect (see "Handling URL redirect after user authenticate with Web login")
