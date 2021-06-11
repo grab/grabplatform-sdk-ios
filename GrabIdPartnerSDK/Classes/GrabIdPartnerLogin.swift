@@ -31,18 +31,18 @@ class GrabIdPartnerSdkLock {}
 
 @objc open class LoginSession : NSObject, NSCoding {
   @objc public let clientId : String
-  @objc public let redirectUrl : URL
-  @objc public let scope : String
-  @objc public let hint : String
-  @objc public let idTokenHint : String
-  @objc public let prompt : String
+  @objc public var redirectUrl : URL
+  @objc public var scope : String
+  @objc public var hint : String
+  @objc public var idTokenHint : String
+  @objc public var prompt : String
 
   // Used by app for one time transactions scenario - base64 encoded jwt
-  @objc public let request : String?
+  @objc public var request : String?
   
   // The OpenID Connect ACR optional parameter to the authorize endpoint will be utilized to pass in
   // service id info and device ID
-  @objc public let acrValues : [String:String]?
+  @objc public var acrValues : [String:String]?
   
   // setter internal, public get to GrabId Partner SDK
   @objc public fileprivate(set) var code: String? = nil
