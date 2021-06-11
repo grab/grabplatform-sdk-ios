@@ -9,6 +9,10 @@ and terms of service.
 [![License](https://img.shields.io/cocoapods/l/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 [![Platform](https://img.shields.io/cocoapods/p/GrabIdPartnerSDK.svg?style=flat)](https://cocoapods.org/pods/GrabIdPartnerSDK)
 
+## Release Notes - 1.0.5
+
+Allow app to change redirectUrl, scope, hint, idTokenHint and prompt in LoginSession.
+
 ## Release Notes - 1.0.4
 
 Login with PAX now supports non Grab domain for the authorization url. PAX has updated the scheme to grabconnect2. Partner wants to use

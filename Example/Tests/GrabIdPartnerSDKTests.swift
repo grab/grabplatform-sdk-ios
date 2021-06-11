@@ -137,6 +137,31 @@ class GrabIdPartnerSDKTests: XCTestCase {
     waitForExpectations(timeout: 1, handler: nil)
   }
   
+  func testChangingLoginSession() {
+    let url = URL(string: "grabtest://testopen")
+    guard let testUrl = url else {
+      XCTAssert(false, "invalid url")
+      return
+    }
+
+    let loginSession = LoginSession(clientId: "TestClientId", redirectUrl: testUrl, scope: "test_scope1 test_scope2 test_scope3",
+                                    serviceDiscoveryUrl: "http://testdiscoveryendpoint.com/testservicediscovery",
+                                    hint: "test hint", idTokenHint: "test idtokenhint", prompt: "test prompt")
+
+    loginSession.request = "testRequest"
+    XCTAssertEqual(loginSession.request, "testRequest")
+    loginSession.redirectUrl = testUrl
+    XCTAssertEqual(loginSession.redirectUrl.absoluteString, "grabtest://testopen")
+    loginSession.scope = "testScope"
+    XCTAssertEqual(loginSession.scope, "testScope")
+    loginSession.hint = "testHint"
+    XCTAssertEqual(loginSession.hint, "testHint")
+    loginSession.idTokenHint = "testIdTokenHint"
+    XCTAssertEqual(loginSession.idTokenHint, "testIdTokenHint")
+    loginSession.prompt = "testPrompt"
+    XCTAssertEqual(loginSession.prompt, "testPrompt")
+  }
+  
   func testLoginAndLogout() {
     // given
     let mockUrlSession = MockURLSession(data:nil, response:nil, error:nil)
