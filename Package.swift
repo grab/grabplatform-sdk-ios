@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 /**
@@ -13,7 +13,7 @@ import PackageDescription
 let package = Package(
     name: "GrabIdPartnerSDK",
     platforms: [
-        .iOS(.v14)
+        .iOS(.v13)
     ],
     products: [
         .library(
@@ -47,6 +47,5 @@ let package = Package(
                 .linkedFramework("Security")
             ]
         )
-    ],
-    swiftLanguageVersions: [.v6]
+    ]
 )

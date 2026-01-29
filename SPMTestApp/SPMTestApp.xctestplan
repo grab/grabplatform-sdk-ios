@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "157C1C20-C410-4F1B-9FF4-1381F0EBE9C1",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SPMTestApp.xcodeproj",
+      "identifier" : "2A5F6FA92F2B3CF40030EF6D",
+      "name" : "SPMTestApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SPMTestApp.xcodeproj",
+        "identifier" : "2A5F6FBF2F2B3CF60030EF6D",
+        "name" : "SPMTestAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}

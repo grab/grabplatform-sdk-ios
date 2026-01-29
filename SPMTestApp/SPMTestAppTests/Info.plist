@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>grabconnect2</string>
+		<string>grabdriver</string>
+		<string>grab</string>
+		<string>itms-apps</string>
+	</array>
+	<key>GrabIdPartnerSDK</key>
+	<dict>
+		<key>Hint</key>
+		<string>test hint</string>
+		<key>ClientId</key>
+		<string>TestClientId</string>
+		<key>RedirectUrl</key>
+		<string>grabtest://testopen</string>
+		<key>Scope</key>
+		<string>test_scope1 test_scope2 test_scope3</string>
+		<key>ServiceDiscoveryUrl</key>
+		<string>http://testdiscoveryendpoint.com/testservicediscovery</string>
+		<key>AcrValues</key>
+		<dict>
+			<key>acrKey1</key>
+			<string>acrValue1</string>
+			<key>acrKey2</key>
+			<string>acrValue2</string>
+		</dict>
+		<key>Request</key>
+		<string>test request</string>
+	</dict>
+	<key>MockJSONResponses</key>
+	<dict>
+		<key>authorization_code</key>
+		<dict>
+			<key>ValidResponse</key>
+			<string>{&quot;access_token&quot;:&quot;testAccessToken&quot;,&quot;token_type&quot;:&quot;TestTokenType&quot;,&quot;expires_in&quot;:10,&quot;id_token&quot;:&quot;testIdToken&quot;,&quot;refresh_token&quot;:&quot;testRefreshToken&quot;}</string>
+			<key>ExpiredResponse</key>
+			<string>{&quot;access_token&quot;:&quot;testAccessToken&quot;,&quot;token_type&quot;:&quot;TestTokenType&quot;,&quot;expires_in&quot;:0,&quot;id_token&quot;:&quot;testIdToken&quot;,&quot;refresh_token&quot;:&quot;testRefreshToken&quot;}</string>
+		</dict>
+		<key>token_info?</key>
+		<dict>
+			<key>ValidResponse</key>
+			<string>{&quot;acr&quot;:&quot;[\&quot;service:PASSENGER\&quot;]&quot;,&quot;aud&quot;:&quot;350c848f-2580-45ba-8879-69d51d54f2d3&quot;,&quot;exp&quot;:2541371242,&quot;iat&quot;:1541112042,&quot;iss&quot;:&quot;https://testissuer.grab.com&quot;,&quot;jti&quot;:&quot;TESTRYWZTsd1IYY66g&quot;,&quot;nbf&quot;:1541112042,&quot;pid&quot;:&quot;a4ec3215-d34b-457b-aa8e-46577358643c&quot;,&quot;sub&quot;:&quot;41c0893d-245e-438b-b971-625badbe7dc4&quot;,&quot;svc&quot;:&quot;PASSENGER&quot;  ,&quot;nonce&quot;:&quot;&quot;}</string>
+		</dict>
+		<key>refresh_token</key>
+		<dict>
+			<key>ValidResponse</key>
+			<string>{&quot;access_token&quot;:&quot;testAccessTokenRefreshed&quot;,&quot;token_type&quot;:&quot;TestTokenType&quot;,&quot;expires_in&quot;:10}</string>
+		</dict>
+		<key>configuration</key>
+		<dict>
+			<key>authorization_endpoint</key>
+			<string>https://gradidpartnertest.com/authorize</string>
+			<key>ValidResponse</key>
+			<string>{&quot;issuer&quot;:&quot;https://testissuer.grab.com&quot;,&quot;authorization_endpoint&quot;:&quot;https://gradidpartnertest.com/authorize&quot;,&quot;token_endpoint&quot;:&quot;https://gradidpartnertest.com/token&quot;,&quot;userinfo_endpoint&quot;:&quot;https://gradidpartnertest.com/userinfo&quot;,&quot;revocation_endpoint&quot;:&quot;https://gradidpartnertest.com/revoke&quot;,&quot;id_token_verification_endpoint&quot;:&quot;https://gradidpartnertest.com/token_info&quot;,&quot;client_public_info_endpoint&quot;:&quot;https://gradidpartnertest.com/clientPublicInfo/{client_id}/public&quot;}</string>
+		</dict>
+		<key>customprotocol</key>
+		<dict>
+			<key>customProtocol_endpoint</key>
+			<string>https://gradidpartnertest.com/clientPublicInfo/TestClientId/public</string>
+			<key>ValidResponse</key>
+			<string>{&quot;product_name&quot;:&quot;OAuth2TestOrg&quot;,&quot;logo_url&quot;:&quot;https://sg.bmscdn.com/webin/mailer/bmslogo.png&quot;,&quot;home_page_url&quot;:&quot;http://www.contosoco.com/&quot;,&quot;privacy_policy_url&quot;:&quot;https://privacy.microsoft.com/en-us/privacystatement&quot;,&quot;terms_of_service_url&quot;:&quot;https://privacy.microsoft.com/en-us/terms_of_service_url&quot;,&quot;custom_protocols&quot;:[&quot;{\&quot;protocol_adr\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;minversion_adr\&quot;: \&quot;5.58.0\&quot;,\&quot;package_adr\&quot;: \&quot;com.grabtaxi.passenger\&quot;,\&quot;protocol_ios\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;protocol_pax_ios\&quot;:\&quot;testconnect:\&quot;}&quot;]}</string>
+			<key>ValidResponseWithAppLink</key>
+			<string>{&quot;product_name&quot;:&quot;OAuth2TestOrg&quot;,&quot;logo_url&quot;:&quot;https://sg.bmscdn.com/webin/mailer/bmslogo.png&quot;,&quot;home_page_url&quot;:&quot;http://www.contosoco.com/&quot;,&quot;privacy_policy_url&quot;:&quot;https://privacy.microsoft.com/en-us/privacystatement&quot;,&quot;terms_of_service_url&quot;:&quot;https://privacy.microsoft.com/en-us/terms_of_service_url&quot;,&quot;custom_protocols&quot;:[&quot;{\&quot;protocol_adr\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;minversion_adr\&quot;: \&quot;5.58.0\&quot;,\&quot;package_adr\&quot;: \&quot;com.grabtaxi.passenger\&quot;,\&quot;protocol_ios\&quot;: \&quot;grab://open?screenType=PARTNERLOGIN\&quot;,\&quot;protocol_pax_ios\&quot;:\&quot;testconnect:\&quot;}&quot;,&quot;{\&quot;appstore_link_adr\&quot;: \&quot;https://play.google.com/store/apps/details?id=com.grabtaxi.passenger\&quot;,\&quot;appstore_link_ios\&quot;: \&quot;itms-apps://itunes.apple.com/app/id647268330\&quot;}&quot;]}</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

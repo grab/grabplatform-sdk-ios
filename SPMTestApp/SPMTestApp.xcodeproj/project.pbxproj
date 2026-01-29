@@ -1,0 +1,506 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A420D612F2C6FFE000D0C6D /* GrabIdPartnerSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 2A420D602F2C6FFE000D0C6D /* GrabIdPartnerSDK */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2A5F6FC12F2B3CF60030EF6D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A5F6FA22F2B3CF40030EF6D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A5F6FA92F2B3CF40030EF6D;
+			remoteInfo = SPMTestApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2A5F6FAA2F2B3CF40030EF6D /* SPMTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SPMTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A5F6FC02F2B3CF60030EF6D /* SPMTestAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SPMTestAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2AD226922F2DA5BA00178DBD /* SPMTestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SPMTestApp.xctestplan; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2A5F6FD22F2B3CF60030EF6D /* Exceptions for "SPMTestApp" folder in "SPMTestApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2A5F6FA92F2B3CF40030EF6D /* SPMTestApp */;
+		};
+		2A5F6FDE2F2B3CF60030EF6D /* Exceptions for "SPMTestAppTests" folder in "SPMTestAppTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2A5F6FBF2F2B3CF60030EF6D /* SPMTestAppTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2A5F6FAC2F2B3CF40030EF6D /* SPMTestApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2A5F6FD22F2B3CF60030EF6D /* Exceptions for "SPMTestApp" folder in "SPMTestApp" target */,
+			);
+			path = SPMTestApp;
+			sourceTree = "<group>";
+		};
+		2A5F6FC32F2B3CF60030EF6D /* SPMTestAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2A5F6FDE2F2B3CF60030EF6D /* Exceptions for "SPMTestAppTests" folder in "SPMTestAppTests" target */,
+			);
+			path = SPMTestAppTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2A5F6FA72F2B3CF40030EF6D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A420D612F2C6FFE000D0C6D /* GrabIdPartnerSDK in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A5F6FBD2F2B3CF60030EF6D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A5F6FA12F2B3CF40030EF6D = {
+			isa = PBXGroup;
+			children = (
+				2AD226922F2DA5BA00178DBD /* SPMTestApp.xctestplan */,
+				2A5F6FAC2F2B3CF40030EF6D /* SPMTestApp */,
+				2A5F6FC32F2B3CF60030EF6D /* SPMTestAppTests */,
+				2A5F6FDF2F2B3D390030EF6D /* Frameworks */,
+				2A5F6FAB2F2B3CF40030EF6D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A5F6FAB2F2B3CF40030EF6D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A5F6FAA2F2B3CF40030EF6D /* SPMTestApp.app */,
+				2A5F6FC02F2B3CF60030EF6D /* SPMTestAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A5F6FDF2F2B3D390030EF6D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2A5F6FA92F2B3CF40030EF6D /* SPMTestApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A5F6FD32F2B3CF60030EF6D /* Build configuration list for PBXNativeTarget "SPMTestApp" */;
+			buildPhases = (
+				2A5F6FA62F2B3CF40030EF6D /* Sources */,
+				2A5F6FA72F2B3CF40030EF6D /* Frameworks */,
+				2A5F6FA82F2B3CF40030EF6D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2A5F6FAC2F2B3CF40030EF6D /* SPMTestApp */,
+			);
+			name = SPMTestApp;
+			packageProductDependencies = (
+				2A420D602F2C6FFE000D0C6D /* GrabIdPartnerSDK */,
+			);
+			productName = SPMTestApp;
+			productReference = 2A5F6FAA2F2B3CF40030EF6D /* SPMTestApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2A5F6FBF2F2B3CF60030EF6D /* SPMTestAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A5F6FD82F2B3CF60030EF6D /* Build configuration list for PBXNativeTarget "SPMTestAppTests" */;
+			buildPhases = (
+				2A5F6FBC2F2B3CF60030EF6D /* Sources */,
+				2A5F6FBD2F2B3CF60030EF6D /* Frameworks */,
+				2A5F6FBE2F2B3CF60030EF6D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A5F6FC22F2B3CF60030EF6D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2A5F6FC32F2B3CF60030EF6D /* SPMTestAppTests */,
+			);
+			name = SPMTestAppTests;
+			packageProductDependencies = (
+			);
+			productName = SPMTestAppTests;
+			productReference = 2A5F6FC02F2B3CF60030EF6D /* SPMTestAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A5F6FA22F2B3CF40030EF6D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					2A5F6FA92F2B3CF40030EF6D = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					2A5F6FBF2F2B3CF60030EF6D = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 2A5F6FA92F2B3CF40030EF6D;
+					};
+				};
+			};
+			buildConfigurationList = 2A5F6FA52F2B3CF40030EF6D /* Build configuration list for PBXProject "SPMTestApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2A5F6FA12F2B3CF40030EF6D;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2A420D5F2F2C6FF9000D0C6D /* XCLocalSwiftPackageReference "../../grabplatform-sdk-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2A5F6FAB2F2B3CF40030EF6D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2A5F6FA92F2B3CF40030EF6D /* SPMTestApp */,
+				2A5F6FBF2F2B3CF60030EF6D /* SPMTestAppTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2A5F6FA82F2B3CF40030EF6D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A5F6FBE2F2B3CF60030EF6D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2A5F6FA62F2B3CF40030EF6D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A5F6FBC2F2B3CF60030EF6D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A5F6FC22F2B3CF60030EF6D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A5F6FA92F2B3CF40030EF6D /* SPMTestApp */;
+			targetProxy = 2A5F6FC12F2B3CF60030EF6D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2A5F6FD42F2B3CF60030EF6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SPMTestApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.GrabTaxi.GrabIdPartnerSDK-SPMTestApp.SPMTestApp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2A5F6FD52F2B3CF60030EF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SPMTestApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.GrabTaxi.GrabIdPartnerSDK-SPMTestApp.SPMTestApp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2A5F6FD62F2B3CF60030EF6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2A5F6FD72F2B3CF60030EF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2A5F6FD92F2B3CF60030EF6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SPMTestAppTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.GrabTaxi.GrabIdPartnerSDK-SPMTestApp.SPMTestAppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SPMTestApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SPMTestApp";
+			};
+			name = Debug;
+		};
+		2A5F6FDA2F2B3CF60030EF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SPMTestAppTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.GrabTaxi.GrabIdPartnerSDK-SPMTestApp.SPMTestAppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SPMTestApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SPMTestApp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A5F6FA52F2B3CF40030EF6D /* Build configuration list for PBXProject "SPMTestApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A5F6FD62F2B3CF60030EF6D /* Debug */,
+				2A5F6FD72F2B3CF60030EF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A5F6FD32F2B3CF60030EF6D /* Build configuration list for PBXNativeTarget "SPMTestApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A5F6FD42F2B3CF60030EF6D /* Debug */,
+				2A5F6FD52F2B3CF60030EF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A5F6FD82F2B3CF60030EF6D /* Build configuration list for PBXNativeTarget "SPMTestAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A5F6FD92F2B3CF60030EF6D /* Debug */,
+				2A5F6FDA2F2B3CF60030EF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		2A420D5F2F2C6FF9000D0C6D /* XCLocalSwiftPackageReference "../../grabplatform-sdk-ios" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../grabplatform-sdk-ios";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2A420D602F2C6FFE000D0C6D /* GrabIdPartnerSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2A420D5F2F2C6FF9000D0C6D /* XCLocalSwiftPackageReference "../../grabplatform-sdk-ios" */;
+			productName = GrabIdPartnerSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 2A5F6FA22F2B3CF40030EF6D /* Project object */;
+}

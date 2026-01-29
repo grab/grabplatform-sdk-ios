@@ -132,4 +132,4 @@ The SDK uses the following Apple-restricted APIs:
 ---
 
 **Last Updated**: January 2026  
-**SDK Version**: 1.0.6+
+**SDK Version**: 2.0.0

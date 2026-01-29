@@ -41,6 +41,13 @@ partner must handle error to retry or cancel the authorization request.
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
+
+### Swift Package Manager (SPM)
+- iOS 13.0+
+- Xcode 14.0+
+- Swift 5.5+
+
+### CocoaPods
 - iOS 9.0+
 - Xcode 9.0+
 - Swift 3.2 / 4.1+
@@ -61,10 +68,31 @@ Select the Project, Choose Target → Project Name → Select General → Scroll
 
 If there are multiple Framework with same name in “Linked Frameworks and Libraries”, delete other ones, and just keep only one.
 
+### Swift Package Manager (Recommended)
+
+**Requirements: iOS 13.0+**
+
+#### Via Xcode:
+1. Go to **File > Add Packages...**
+2. Enter repository URL: `https://github.com/grab/grabplatform-sdk-ios.git`
+3. Select version: `2.0.0` or later
+4. Click **Add Package**
+
+#### Via Package.swift:
+```swift
+dependencies: [
+    .package(url: "https://github.com/grab/grabplatform-sdk-ios.git", from: "2.0.0")
+]
+```
+
+### CocoaPods
+
+**Requirements: iOS 9.0+**
+
 Alternatively, the following command can be used in Podfile
 
-```swift
-pod 'GrabIdPartnerSDK', :git => 'https://github.com/grab/grabplatform-sdk-ios.git', :tag => '1.0.1'
+```ruby
+pod 'GrabIdPartnerSDK', :git => 'https://github.com/grab/grabplatform-sdk-ios.git', :tag => '2.0.0'
 ```
 
 ## Getting Started
