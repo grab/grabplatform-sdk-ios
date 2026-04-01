@@ -1,0 +1,15 @@
+{
+  "originHash" : "f935971aa6e05120fb331c273a400402b826f91e75e002d280e93a9b69b572b3",
+  "pins" : [
+    {
+      "identity" : "cryptoswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bangnguyengrab/CryptoSwift.git",
+      "state" : {
+        "branch" : "1.9.0_library_evolution",
+        "revision" : "861765c63d129a2c8a285445b92bbb6af5062683"
+      }
+    }
+  ],
+  "version" : 3
+}
