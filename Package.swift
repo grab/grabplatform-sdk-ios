@@ -23,8 +23,8 @@ let package = Package(
     ],
     dependencies: [
         // CryptoSwift with Library Evolution enabled
-        // Using Grab's official fork: https://github.com/bangnguyengrab/CryptoSwift
-        .package(url: "https://github.com/bangnguyengrab/CryptoSwift.git", branch: "1.9.0_library_evolution")
+        // Using Grab's official fork: https://github.com/grab/CryptoSwift
+        .package(url: "https://github.com/grab/CryptoSwift.git", branch: "1.7.1+LibEvolution")
     ],
     targets: [
         .target(
