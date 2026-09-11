@@ -4,10 +4,10 @@
     {
       "identity" : "cryptoswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bangnguyengrab/CryptoSwift.git",
+      "location" : "https://github.com/grab/CryptoSwift.git",
       "state" : {
-        "branch" : "1.9.0_library_evolution",
-        "revision" : "861765c63d129a2c8a285445b92bbb6af5062683"
+        "branch" : "1.7.1+LibEvolution",
+        "revision" : "02986d9a7cb21bff190cc9faf4ef1063fa03c162"
       }
     }
   ],

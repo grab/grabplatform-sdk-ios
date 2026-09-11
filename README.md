@@ -75,13 +75,13 @@ If there are multiple Framework with same name in “Linked Frameworks and Libra
 #### Via Xcode:
 1. Go to **File > Add Packages...**
 2. Enter repository URL: `https://github.com/grab/grabplatform-sdk-ios.git`
-3. Select version: `2.0.0` or later
+3. Select version: `2.0.1` or later
 4. Click **Add Package**
 
 #### Via Package.swift:
 ```swift
 dependencies: [
-    .package(url: "https://github.com/grab/grabplatform-sdk-ios.git", from: "2.0.0")
+    .package(url: "https://github.com/grab/grabplatform-sdk-ios.git", from: "2.0.1")
 ]
 ```
 
@@ -92,7 +92,7 @@ dependencies: [
 Alternatively, the following command can be used in Podfile
 
 ```ruby
-pod 'GrabIdPartnerSDK', :git => 'https://github.com/grab/grabplatform-sdk-ios.git', :tag => '2.0.0'
+pod 'GrabIdPartnerSDK', :git => 'https://github.com/grab/grabplatform-sdk-ios.git', :tag => '2.0.1'
 ```
 
 ## Getting Started
