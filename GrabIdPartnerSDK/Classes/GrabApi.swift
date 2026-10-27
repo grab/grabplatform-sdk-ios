@@ -106,7 +106,7 @@ class GrabApi {
             endPoints.loginUri = authorizationEndpoint as? String ?? ""
             endPoints.exchangeUri = tokenEndpoint as? String ?? ""
             endPoints.verify = idTokenVerificationEndPoint as? String ?? ""
-            endPoints.clientPublicInfoUri = clientPublicInfoUri ?? "https://api.stg-myteksi.com/grabid/v1/oauth2/clients/{client_id}/public"
+            endPoints.clientPublicInfoUri = clientPublicInfoUri ?? ""
           }
           completion(endPoints, nil)
         } catch let parseError {
